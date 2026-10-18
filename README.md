@@ -46,7 +46,8 @@ data/<slug>/             译本数据（书架据此判断「已译 / 待译」�
 
 - 下拉框改分组 → 存在浏览器本地，点「导出分组」下载新的 `manifest.json` 覆盖回去即可固化；
 - 卡片上的「怎么译？」会给出对应的抽取命令；
-- 判断规则很简单：`manifest.json` 里某一项的 `slug` 对应的 `data/<slug>/` 存在，就是「已译」。
+- 判断规则很简单：`manifest.json` 里某一项的 `slug` 对应的 `data/<slug>/` 存在，就是「已译」；
+- 想把架上的论文一次译完：`python tools/batch.py`（详见 [docs/USAGE.md §8.1](docs/USAGE.md)）。
 
 ## 把自己的论文做成一本
 

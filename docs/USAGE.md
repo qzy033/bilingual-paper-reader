@@ -337,6 +337,21 @@ python tools/package.py --version 0.2.0
 
 没配 `OPENAI_API_KEY` 时脚本不会瞎跑：会先执行 `--dry-run` 告诉你多少段要翻，然后退出。
 
+### 8.1 把书架上的论文一次译完
+
+`tools/batch.py` 按 `papers/manifest.json` 排队，把还没译的一篇篇跑完（抽取 → 翻译 → 术语 → 构建）：
+
+```bash
+python tools/batch.py --dry-run          # 还差几篇、都是哪几篇
+python tools/batch.py                    # 全都译了
+python tools/batch.py --only 2302.13971  # 只译一篇
+python tools/batch.py --limit 2          # 先来两篇试试
+```
+
+- 每篇跑完就落盘，失败只影响那一篇，重跑自动跳过已译的；
+- 抽取完会把 `manifest.json` 里的中英标题、分组、arXiv 号补进 `data/<slug>/00-meta.json`；
+- 中文标题、术语解释的质量不如路线 A（agent 通读后写），适合先出草稿再润色。
+
 ---
 
 ## 9. 质量控制清单
