@@ -279,6 +279,17 @@ window.SHELF = {
    "note": "Transformer 原始论文"
   },
   {
+   "arxiv": "",
+   "id": "",
+   "slug": "gpt2",
+   "group": "",
+   "titleEn": "Language Models are Unsupervised Multitask Learners",
+   "titleZh": "语言模型是无监督多任务学习者（GPT-2）",
+   "status": "todo",
+   "pdf": "",
+   "note": "GPT-2 技术报告（非 arXiv）：不微调也能做多任务"
+  },
+  {
    "arxiv": "2104.09864",
    "id": "",
    "slug": "",

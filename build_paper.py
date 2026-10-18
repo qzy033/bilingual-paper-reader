@@ -1,4 +1,4 @@
-﻿"""
+"""
 把 data/<slug>/*.json 组装成阅读器可加载的数据文件。
 
 用法:
@@ -90,8 +90,10 @@ def build_shelf(slug2id):
         arxiv = (it.get("arxiv") or "").strip()
         slug = it.get("slug") or ""
         pid = slug2id.get(slug)
-        pdf = os.path.join(BASE, "papers", arxiv + ".pdf") if arxiv else ""
-        has_pdf = bool(arxiv) and os.path.exists(pdf)
+        # PDF 文件名：优先用条目自带的 pdf 字段（非 arXiv 论文，如 GPT-2），否则用 arXiv 号
+        pdfname = (it.get("pdf") or "").strip() or (arxiv + ".pdf" if arxiv else "")
+        pdf = os.path.join(BASE, "papers", pdfname) if pdfname else ""
+        has_pdf = bool(pdfname) and os.path.exists(pdf)
         if not pid and not has_pdf and it.get("optional"):
             continue
         if pid:
@@ -104,7 +106,7 @@ def build_shelf(slug2id):
             "titleEn": it.get("titleEn") or "",
             "titleZh": it.get("titleZh") or "",
             "status": "ready" if pid else "todo",
-            "pdf": ("../papers/%s.pdf" % arxiv) if has_pdf else "",
+            "pdf": ("../papers/" + pdfname) if has_pdf else "",
             "note": it.get("note") or "",
         })
     for slug, pid in sorted(slug2id.items()):

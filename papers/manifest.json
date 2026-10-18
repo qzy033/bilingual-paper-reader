@@ -8,6 +8,14 @@
       "note": "Transformer 原始论文"
     },
     {
+      "arxiv": "",
+      "pdf": "gpt-2.pdf",
+      "slug": "gpt2",
+      "titleEn": "Language Models are Unsupervised Multitask Learners",
+      "titleZh": "语言模型是无监督多任务学习者（GPT-2）",
+      "note": "GPT-2 技术报告（非 arXiv）：不微调也能做多任务"
+    },
+    {
       "arxiv": "2104.09864",
       "slug": null,
       "titleEn": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
