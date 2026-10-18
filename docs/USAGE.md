@@ -261,7 +261,53 @@ python build_paper.py
 
 ---
 
-## 6. 打包分发
+## 6. 书架与分组
+
+书架是「所有论文的目录」，不只是已译的那几本。它由三部分拼成：
+
+```
+papers/                  PDF 原文件（本地放着，已在 .gitignore 里，不会进 git）
+papers/manifest.json     书架目录：每本书的标题、分组、对应哪份译本
+data/<slug>/             译本数据
+```
+
+`build_paper.py` 把 manifest 和 `data/` 合起来，生成 `window.SHELF`。
+**判断规则**：manifest 里某项的 `slug` 对应的 `data/<slug>/` 存在 → 「已译」；否则「待译」。
+
+### 6.1 往书架上加一本
+
+1. 把 PDF 放到 `papers/`（文件名就用 arXiv 号，如 `2302.13971.pdf`）；
+2. 在 `papers/manifest.json` 的 `items` 里加一条：
+
+```json
+{
+  "arxiv": "2302.13971",
+  "slug": "llama",
+  "group": "开源模型",
+  "titleEn": "LLaMA: Open and Efficient Foundation Language Models",
+  "titleZh": "LLaMA：开放高效的基础语言模型",
+  "note": "开源模型的分水岭"
+}
+```
+
+3. 跑 `python build_paper.py`，刷新页面。
+
+- `slug` 先填好（比如 `llama`），等 `data/llama/` 建出来，这本书就自动从「待译」变成「已译」；
+- `slug` 填 `null` 也行，那它会一直是待译状态；
+- `optional: true` 用于「有数据才显示」的条目（示例论文就是这种）。
+
+### 6.2 页面上的书架
+
+- 左侧栏按分组列出全部书目，灰点 = 待译；
+- 点左上「书架 / Bookshelf」进全屏书架：分组、计数、搜索、卡片（节数 / 对照段 / 术语量 / 预计阅读时长）；
+- 每张卡右下角有**分组下拉框**：改了立刻生效（存在浏览器 localStorage），
+  点右上「导出分组」会下载合并后的 `manifest.json`，覆盖回 `papers/manifest.json` 就固化了；
+- 待译卡片上的「怎么译？」会弹出该书的抽取命令；「PDF ↗」直接打开原文件。
+
+> 分组覆盖只存在你自己的浏览器里；换机器、换浏览器会回到 manifest 的原始分组。
+> 想让大家看到一样的分组，就把导出的 manifest 提交上去。
+
+## 7. 打包分发
 
 ```bash
 python tools/package.py --version 0.2.0
@@ -272,7 +318,7 @@ python tools/package.py --version 0.2.0
 
 ---
 
-## 7. 一条命令走完
+## 8. 一条命令走完
 
 ```powershell
 .\make.ps1 -Pdf "C:\papers\paper.pdf" -Slug my-paper -Package
@@ -293,7 +339,7 @@ python tools/package.py --version 0.2.0
 
 ---
 
-## 8. 质量控制清单
+## 9. 质量控制清单
 
 - [ ] `build_paper.py` 没有 `!` 输出
 - [ ] 「仅译文」模式通读一遍：有没有半截英文、有没有「〔译〕」之类的占位残留
@@ -304,7 +350,7 @@ python tools/package.py --version 0.2.0
 
 ---
 
-## 9. 常见问题
+## 10. 常见问题
 
 | 现象 | 原因 / 处理 |
 |---|---|
@@ -320,7 +366,7 @@ python tools/package.py --version 0.2.0
 
 ---
 
-## 10. 数据格式速查
+## 11. 数据格式速查
 
 | 想看什么 | 去哪 |
 |---|---|

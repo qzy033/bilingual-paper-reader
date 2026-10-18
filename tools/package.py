@@ -22,6 +22,7 @@ INCLUDE_FILES = [
     "index.html", "README.md", "LICENSE", "NOTICE.md",
     "build_paper.py", "make.ps1", "make.sh", "VERSION",
     "data/README.md",
+    os.path.join("papers", "manifest.json"),
 ]
 INCLUDE_DIRS = ["reader", "tools", "docs", os.path.join("data", "demo")]
 

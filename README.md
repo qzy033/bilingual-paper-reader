@@ -16,11 +16,15 @@
 - **悬停对照**：对照模式悬停左栏，右栏同段高亮；仅原文模式悬停，直接浮出译文卡片。
 - **术语解释**：虚线下划线，悬停出卡片（先打比方、再给定义）；**点击**会在原文里高亮对应的英文词。
 - **引用浮窗**：正文 `[13]`、`[38, 24, 15]` 在中英两栏都会变成链接，悬停出文献卡片，可一键打开 arXiv。
+- **书架**：已译的论文按主题分组陈列，显示节数 / 对照段 / 术语量 / 阅读时长；
+  还没翻的 PDF 也列在架上（标「待译」），点一下就告诉你该跑哪条命令。分组可下拉调整、可导出。
 - **生词本**：跨篇保存，可导出 Markdown。
 - **读起来舒服**：字号调节、米白 / 羊皮纸 / 夜间三套配色、自动记住读到哪。
 - **可打印**：Chrome 直接打印就是 A4 双栏对照 PDF。
 
 ![术语与引用](docs/screenshot-fig.png)
+
+![书架](docs/screenshot-shelf.png)
 
 ## 快速开始
 
@@ -31,6 +35,18 @@ git clone <this-repo> && cd bilingual-paper-reader
 
 第一次打开看到的是示例论文《注意力是怎么工作的：一页入门》——文字、插图、术语、引用
 全部为本项目原创，用来演示每个功能。
+
+## 书架
+
+```
+papers/                  PDF 原文件（本地，已在 .gitignore 里）
+papers/manifest.json     书架的目录：标题、分组、对应哪份译本
+data/<slug>/             译本数据（书架据此判断「已译 / 待译」）
+```
+
+- 下拉框改分组 → 存在浏览器本地，点「导出分组」下载新的 `manifest.json` 覆盖回去即可固化；
+- 卡片上的「怎么译？」会给出对应的抽取命令；
+- 判断规则很简单：`manifest.json` 里某一项的 `slug` 对应的 `data/<slug>/` 存在，就是「已译」。
 
 ## 把自己的论文做成一本
 
@@ -84,15 +100,18 @@ python tools/package.py                                  # 5. 打成可分发的
 ```
 reader/index.html          阅读器（样式 + 渲染 + 交互，单文件）
 reader/FORMAT.md           数据格式说明（给人，也给 AI）
-reader/papers/library.js   构建产物：论文数据（自动生成）
+reader/papers/library.js   构建产物：论文数据 + 书架数据（自动生成）
 reader/assets/<id>/        构建产物：插图
 data/demo/                 示例论文源数据
+data/<slug>/               你翻译的论文数据（不进 git）
+papers/manifest.json       书架目录：标题、分组、对应译本
+papers/*.pdf               论文原文件（不进 git）
 tools/pdf_to_json.py       PDF → 待翻译骨架
 tools/translate.py         批量翻译 / 术语标注 / 术语表
 tools/package.py           打分发 zip
-docs/USAGE.md              详细使用说明（两条路线、AI 翻什么、排错）
+docs/USAGE.md              详细使用说明（两条路线、书架、AI 翻什么、排错）
 docs/*.png                 截图
-build_paper.py             构建 + 格式校验
+build_paper.py             构建 + 格式校验 + 生成书架
 ```
 
 ## 设计上的取舍

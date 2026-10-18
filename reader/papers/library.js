@@ -262,3 +262,182 @@ window.PAPERS = [
   ]
  }
 ];
+
+/* 书架：papers/manifest.json + 已有的译本 */
+window.SHELF = {
+ "groups": [
+  "基础架构",
+  "规模与训练",
+  "开源模型",
+  "对齐与推理",
+  "系统与效率",
+  "示例"
+ ],
+ "items": [
+  {
+   "arxiv": "1706.03762",
+   "id": "",
+   "slug": "attention",
+   "group": "基础架构",
+   "titleEn": "Attention Is All You Need",
+   "titleZh": "注意力就是你所需要的一切",
+   "status": "todo",
+   "pdf": "../papers/1706.03762.pdf",
+   "note": "Transformer 原始论文"
+  },
+  {
+   "arxiv": "2104.09864",
+   "id": "",
+   "slug": "",
+   "group": "基础架构",
+   "titleEn": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+   "titleZh": "RoFormer：旋转位置编码（RoPE）",
+   "status": "todo",
+   "pdf": "../papers/2104.09864.pdf",
+   "note": "位置编码，几乎所有开源 LLM 都在用"
+  },
+  {
+   "arxiv": "2309.00071",
+   "id": "",
+   "slug": "",
+   "group": "基础架构",
+   "titleEn": "YaRN: Efficient Context Window Extension of Large Language Models",
+   "titleZh": "YaRN：上下文窗口的高效扩展",
+   "status": "todo",
+   "pdf": "../papers/2309.00071.pdf",
+   "note": "长上下文 / RoPE 外推"
+  },
+  {
+   "arxiv": "2001.08361",
+   "id": "",
+   "slug": "",
+   "group": "规模与训练",
+   "titleEn": "Scaling Laws for Neural Language Models",
+   "titleZh": "神经语言模型的规模法则",
+   "status": "todo",
+   "pdf": "../papers/2001.08361.pdf",
+   "note": "参数、数据、算力三者的幂律"
+  },
+  {
+   "arxiv": "2203.15556",
+   "id": "",
+   "slug": "",
+   "group": "规模与训练",
+   "titleEn": "Training Compute-Optimal Large Language Models",
+   "titleZh": "训练计算最优的大语言模型（Chinchilla）",
+   "status": "todo",
+   "pdf": "../papers/2203.15556.pdf",
+   "note": "同样的算力，数据该给多少"
+  },
+  {
+   "arxiv": "2302.13971",
+   "id": "",
+   "slug": "",
+   "group": "开源模型",
+   "titleEn": "LLaMA: Open and Efficient Foundation Language Models",
+   "titleZh": "LLaMA：开放高效的基础语言模型",
+   "status": "todo",
+   "pdf": "../papers/2302.13971.pdf",
+   "note": "开源模型的分水岭"
+  },
+  {
+   "arxiv": "2401.04088",
+   "id": "",
+   "slug": "",
+   "group": "开源模型",
+   "titleEn": "Mixtral of Experts",
+   "titleZh": "Mixtral 混合专家模型",
+   "status": "todo",
+   "pdf": "../papers/2401.04088.pdf",
+   "note": "稀疏 MoE 的工程样本"
+  },
+  {
+   "arxiv": "2401.06066",
+   "id": "",
+   "slug": "",
+   "group": "开源模型",
+   "titleEn": "DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models",
+   "titleZh": "DeepSeekMoE：专家极致专业化的混合专家模型",
+   "status": "todo",
+   "pdf": "../papers/2401.06066.pdf",
+   "note": "细粒度专家 + 共享专家"
+  },
+  {
+   "arxiv": "2407.21783",
+   "id": "",
+   "slug": "",
+   "group": "开源模型",
+   "titleEn": "The Llama 3 Herd of Models",
+   "titleZh": "Llama 3 模型家族",
+   "status": "todo",
+   "pdf": "../papers/2407.21783.pdf",
+   "note": "从数据到后训练的完整报告"
+  },
+  {
+   "arxiv": "2203.02155",
+   "id": "",
+   "slug": "",
+   "group": "对齐与推理",
+   "titleEn": "Training language models to follow instructions with human feedback",
+   "titleZh": "用人类反馈训练语言模型遵循指令（InstructGPT）",
+   "status": "todo",
+   "pdf": "../papers/2203.02155.pdf",
+   "note": "RLHF 的三步流程"
+  },
+  {
+   "arxiv": "2305.18290",
+   "id": "",
+   "slug": "",
+   "group": "对齐与推理",
+   "titleEn": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+   "titleZh": "直接偏好优化（DPO）",
+   "status": "todo",
+   "pdf": "../papers/2305.18290.pdf",
+   "note": "把 RLHF 化简成一个分类损失"
+  },
+  {
+   "arxiv": "2501.12948",
+   "id": "",
+   "slug": "",
+   "group": "对齐与推理",
+   "titleEn": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+   "titleZh": "DeepSeek-R1：用强化学习激发出推理能力",
+   "status": "todo",
+   "pdf": "../papers/2501.12948.pdf",
+   "note": "纯 RL 训出长思维链"
+  },
+  {
+   "arxiv": "2309.06180",
+   "id": "",
+   "slug": "",
+   "group": "系统与效率",
+   "titleEn": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+   "titleZh": "用 PagedAttention 高效管理大模型服务的内存（vLLM）",
+   "status": "todo",
+   "pdf": "../papers/2309.06180.pdf",
+   "note": "KV cache 分页，吞吐翻倍"
+  },
+  {
+   "arxiv": "2205.14135",
+   "id": "",
+   "slug": "",
+   "group": "系统与效率",
+   "titleEn": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+   "titleZh": "FlashAttention：IO 感知的精确注意力",
+   "status": "todo",
+   "pdf": "../papers/2205.14135.pdf",
+   "note": "把注意力算成带宽问题"
+  },
+  {
+   "arxiv": "",
+   "id": "demo-attention-primer",
+   "slug": "demo",
+   "group": "示例",
+   "titleEn": "How Attention Works: A One-Page Primer",
+   "titleZh": "注意力是怎么工作的：一页入门",
+   "status": "ready",
+   "pdf": "",
+   "note": "原创示例，演示阅读器全部功能"
+  }
+ ]
+};

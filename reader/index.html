@@ -208,6 +208,56 @@ tr.hl-row td{background:var(--tint);font-weight:600}
 .xcard.on{opacity:1;visibility:visible}
 .xcard .lbl{font-family:var(--sans);font-size:9.5px;letter-spacing:.2em;color:var(--accent2);display:block;margin-bottom:5px}
 
+/* ============ 书架 ============ */
+.shelfview{position:fixed;inset:0;z-index:98;background:var(--bg);display:none;overflow:auto}
+.shelfview.on{display:block}
+.sv-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;padding:12px 28px;
+  background:color-mix(in srgb,var(--sheet) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.sv-title b{font-family:var(--sans);font-size:15px;letter-spacing:.08em}
+.sv-title span{font-family:var(--sans);font-size:9.5px;letter-spacing:.22em;color:var(--muted);margin-left:8px;text-transform:uppercase}
+#shelfQ{flex:1;max-width:320px;padding:6px 11px;border:1px solid var(--rule);border-radius:8px;
+  background:var(--sheet);font-family:var(--sans);font-size:12.5px;color:var(--ink)}
+.sv-stat{font-family:var(--sans);font-size:11.5px;color:var(--muted)}
+.sv-act,.sv-close{margin-left:auto;font-family:var(--sans);font-size:11.5px;border:1px solid var(--rule);
+  background:var(--sheet);color:var(--ink2);border-radius:7px;padding:5px 10px;cursor:pointer}
+.sv-close{margin-left:0}
+.sv-act:hover,.sv-close:hover{border-color:var(--accent2);color:var(--accent2)}
+.sv-filter{display:flex;gap:7px;flex-wrap:wrap;padding:14px 28px 2px;max-width:1180px;margin:0 auto}
+.chipbtn{font-family:var(--sans);font-size:11.5px;padding:4px 11px;border:1px solid var(--rule);border-radius:999px;
+  background:var(--sheet);color:var(--ink2);cursor:pointer}
+.chipbtn.on{background:var(--accent);color:var(--sheet);border-color:var(--accent)}
+.sv-body{max-width:1180px;margin:0 auto;padding:6px 28px 90px}
+.sgroup h3{font-family:var(--sans);font-size:11.5px;letter-spacing:.18em;color:var(--accent2);
+  margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule);font-weight:600}
+.sgroup h3 i{font-style:normal;color:var(--muted);margin-left:8px;letter-spacing:0}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
+.scard{display:flex;flex-direction:column;gap:5px;padding:13px 15px;background:var(--sheet);
+  border:1px solid var(--rule);transition:.15s}
+.scard:hover{border-color:var(--accent2);transform:translateY(-1px);box-shadow:0 14px 30px -20px rgba(60,45,20,.55)}
+.scard.todo{opacity:.78}
+.scard.flash{outline:2px solid var(--accent2);outline-offset:2px}
+.stop{display:flex;align-items:center;gap:6px;font-family:var(--sans);font-size:10px;letter-spacing:.12em;color:var(--muted)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--accent2)}
+.scard.todo .sdot{background:none;border:1px solid var(--muted)}
+.sarx{margin-left:auto;font-family:var(--latin);letter-spacing:0}
+.scard h4{margin:1px 0 0;font-family:var(--sans);font-size:15px;line-height:1.45;letter-spacing:.01em}
+.sen{margin:0;font-family:var(--latin);font-size:11.5px;line-height:1.5;color:var(--muted)}
+.sstats{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.sstats span{font-family:var(--sans);font-size:10px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:1px 7px}
+.sfoot{display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:9px}
+.sgo{font-family:var(--sans);font-size:11.5px;border:1px solid var(--accent);background:var(--accent);color:var(--sheet);
+  border-radius:6px;padding:4px 10px;cursor:pointer}
+.sgo.ghost{background:none;color:var(--ink2);border-color:var(--rule)}
+.sgo:hover{opacity:.9}
+.slink{font-family:var(--sans);font-size:11px;color:var(--accent);border:0}
+.smove{margin-left:auto;font-family:var(--sans);font-size:10.5px;border:1px solid var(--rule);border-radius:6px;
+  background:var(--sheet);color:var(--ink2);padding:3px 2px;cursor:pointer}
+.sempty{font-family:var(--sans);font-size:13px;color:var(--muted);padding:40px 0}
+.grp{font-family:var(--sans);font-size:10px;letter-spacing:.18em;color:var(--accent2);margin:14px 0 3px;padding-left:2px}
+.grp i{font-style:normal;color:var(--muted);margin-left:6px;letter-spacing:0}
+.side .papers button.todo{opacity:.72}
+.side .papers button .dotq{display:inline-block;width:5px;height:5px;border:1px solid var(--muted);border-radius:50%;margin-right:6px}
+
 /* ============ drawer ============ */
 .drawer{position:fixed;inset:0;z-index:100;display:none}
 .drawer.on{display:block}
@@ -274,6 +324,7 @@ body.m-zh .tgt{max-width:74ch}
 
     <h4>工具 / TOOLS</h4>
     <div class="tools">
+      <button id="btnShelf">▤ 书架 / Bookshelf</button>
       <button id="btnVocab">★ 生词本</button>
       <button id="btnGloss">术语表</button>
       <button id="btnHelp">使用帮助 / 快捷键</button>
@@ -312,6 +363,18 @@ body.m-zh .tgt{max-width:74ch}
 <div class="tip" id="tip"></div>
 <div class="xcard" id="xcard"></div>
 <div class="citebox" id="citebox"></div>
+
+<div class="shelfview" id="shelfview">
+  <div class="sv-head">
+    <div class="sv-title"><b>书架</b><span>Bookshelf</span></div>
+    <input id="shelfQ" placeholder="搜标题 / arXiv 号…" autocomplete="off">
+    <span class="sv-stat" id="shelfStat"></span>
+    <button class="sv-act" id="shelfExport">导出分组</button>
+    <button class="sv-close" id="shelfClose">✕</button>
+  </div>
+  <div class="sv-filter" id="shelfFilter" data-g="全部"></div>
+  <div class="sv-body" id="shelfBody"></div>
+</div>
 
 <div class="drawer" id="drawer">
   <div class="mask" data-close></div>
@@ -401,12 +464,145 @@ function boot(){
 
 function buildLibrary(){
   var box=document.getElementById("paperList"); box.innerHTML="";
-  PAPERS.forEach(function(p){
-    var b=el("button", null, '<span>'+esc(p.meta.titleZh||p.meta.title)+'</span><small>'+esc(p.meta.title)+'</small>');
-    b.dataset.id=p.id;
-    b.onclick=function(){ open(p); };
-    box.appendChild(b);
+  var items = shelfItems();
+  if(!items.length){
+    PAPERS.forEach(function(p){
+      var b=el("button", null, '<span>'+esc(p.meta.titleZh||p.meta.title)+'</span><small>'+esc(p.meta.title)+'</small>');
+      b.dataset.id=p.id; b.onclick=function(){ open(p); }; box.appendChild(b);
+    });
+    return;
+  }
+  var groups = shelfGroups();
+  groups.forEach(function(g){
+    var list = items.filter(function(it){ return it.group===g; });
+    if(!list.length) return;
+    box.appendChild(el("div","grp", esc(g) + '<i>' + list.length + '</i>'));
+    list.forEach(function(it){
+      var b=el("button", it.status==="ready"?"":"todo");
+      b.innerHTML='<span>'+(it.status==="ready"?'':'<em class="dotq"></em>')+esc(it.titleZh||it.titleEn)+'</span>'+
+        '<small>'+esc(it.titleEn)+'</small>';
+      b.onclick=function(){
+        if(it.status==="ready"){ open(byId(it.id)); }
+        else { openShelf(it.arxiv); }
+      };
+      box.appendChild(b);
+    });
   });
+}
+
+function byId(id){ return PAPERS.filter(function(p){return p.id===id;})[0]; }
+
+/* ---------- 书架 ---------- */
+function shelfOverrides(){ return store.get("shelfGroups", {}); }
+function statsOf(p){
+  var pairs=0, terms=0, chars=0;
+  (p.sections||[]).forEach(function(s){
+    (s.blocks||[]).forEach(function(b){
+      if(b.type==="pair"){ pairs++; chars += (b.zh||"").length; }
+      if(b.zh) terms += ((String(b.zh).match(/\[\[/g)||[]).length);
+    });
+  });
+  return {sections:(p.sections||[]).length, pairs:pairs, terms:terms, chars:chars,
+          minutes:Math.max(1,Math.round(chars/420))};
+}
+function shelfItems(){
+  var shelf = window.SHELF || {groups:[], items:[]};
+  var ov = shelfOverrides();
+  var items=[], seen={};
+  (shelf.items||[]).forEach(function(src){
+    var p = src.status==="ready" ? byId(src.id) : null;
+    items.push({
+      arxiv: src.arxiv||"", id: p?p.id:"",
+      titleEn: (p && p.meta.title) || src.titleEn || src.arxiv || "",
+      titleZh: (p && (p.meta.titleZh||p.meta.title)) || src.titleZh || "",
+      group: ov[src.arxiv] || src.group || "未分组",
+      status: p ? "ready" : "todo",
+      stats: p ? statsOf(p) : null,
+      pdf: src.pdf || (src.arxiv ? "../papers/"+src.arxiv+".pdf" : ""),
+      note: src.note || ""
+    });
+    if(p) seen[p.id]=1;
+  });
+  PAPERS.forEach(function(p){
+    if(seen[p.id]) return;
+    items.push({arxiv:p.meta.arxiv||"", id:p.id, titleEn:p.meta.title,
+      titleZh:p.meta.titleZh||p.meta.title, group: p.meta.group||"未分组",
+      status:"ready", stats:statsOf(p), pdf:"", note:""});
+  });
+  return items;
+}
+function shelfGroups(){
+  var shelf = window.SHELF || {groups:[]};
+  var items = shelfItems(), out=[];
+  (shelf.groups||[]).forEach(function(g){ if(out.indexOf(g)<0) out.push(g); });
+  items.forEach(function(it){ if(out.indexOf(it.group)<0) out.push(it.group); });
+  return out.filter(function(g){return g!=="未分组";}).concat(out.indexOf("未分组")>=0?["未分组"]:[]);
+}
+function openShelf(focus){
+  var v=document.getElementById("shelfview");
+  v.classList.add("on"); renderShelf();
+  if(focus){
+    var c=document.querySelector('.scard[data-arxiv="'+focus+'"]');
+    if(c){ c.scrollIntoView({block:"center"}); c.classList.add("flash"); setTimeout(function(){c.classList.remove("flash");},1600); }
+  }
+}
+function closeShelf(){ var v=document.getElementById("shelfview"); if(v) v.classList.remove("on"); }
+function renderShelf(){
+  var body=document.getElementById("shelfBody"); if(!body) return;
+  var items=shelfItems(), groups=shelfGroups();
+  var q=(document.getElementById("shelfQ").value||"").trim().toLowerCase();
+  var filter=document.getElementById("shelfFilter").dataset.g||"全部";
+  var ready=items.filter(function(i){return i.status==="ready";}).length;
+
+  var chips=['<button class="chipbtn'+(filter==="全部"?" on":"")+'" data-g="全部">全部 '+items.length+'</button>'];
+  groups.forEach(function(g){
+    var n=items.filter(function(i){return i.group===g;}).length;
+    if(!n) return;
+    chips.push('<button class="chipbtn'+(filter===g?" on":"")+'" data-g="'+attr(g)+'">'+esc(g)+' '+n+'</button>');
+  });
+  document.getElementById("shelfFilter").innerHTML=chips.join("");
+  document.getElementById("shelfStat").textContent = ready+" 本已译 · "+(items.length-ready)+" 本待译";
+
+  var html="";
+  groups.forEach(function(g){
+    if(filter!=="全部" && filter!==g) return;
+    var list=items.filter(function(i){return i.group===g;}).filter(function(i){
+      if(!q) return true;
+      return (i.titleZh+" "+i.titleEn+" "+i.arxiv).toLowerCase().indexOf(q)>=0;
+    });
+    if(!list.length) return;
+    html+='<div class="sgroup"><h3>'+esc(g)+'<i>'+list.length+'</i></h3><div class="sgrid">';
+    list.forEach(function(i){
+      var s=i.stats;
+      html+='<article class="scard '+(i.status==="ready"?"ready":"todo")+'" data-arxiv="'+attr(i.arxiv)+'">'+
+        '<div class="stop"><span class="sdot"></span><span class="sstate">'+(i.status==="ready"?"已译":"待译")+'</span>'+
+        (i.arxiv?'<span class="sarx">'+esc(i.arxiv)+'</span>':'')+'</div>'+
+        '<h4>'+esc(i.titleZh||i.titleEn)+'</h4>'+
+        '<p class="sen">'+esc(i.titleEn)+'</p>'+
+        (s?'<div class="sstats"><span>'+s.sections+' 节</span><span>'+s.pairs+' 段对照</span><span>'+s.terms+' 术语</span><span>约 '+s.minutes+' 分钟</span></div>':
+            '<div class="sstats"><span>未翻译</span>'+(i.pdf?'<span>PDF 已就位</span>':'')+'</div>')+
+        '<div class="sfoot">'+
+          (i.status==="ready"
+            ? '<button class="sgo" data-open="'+attr(i.id)+'">继续阅读 →</button>'
+            : '<button class="sgo ghost" data-todo="'+attr(i.arxiv)+'">怎么译？</button>'+
+              (i.pdf?'<a class="slink" href="'+attr(i.pdf)+'" target="_blank" rel="noopener">PDF ↗</a>':''))+
+          '<select class="smove" data-move="'+attr(i.arxiv||i.id)+'" title="移动到分组">'+
+            groups.map(function(g){return '<option'+(g===i.group?" selected":"")+'>'+esc(g)+'</option>';}).join("")+
+          '</select>'+
+        '</div></article>';
+    });
+    html+='</div></div>';
+  });
+  body.innerHTML = html || '<p class="sempty">没有匹配的论文。</p>';
+}
+function shelfExport(){
+  var items=shelfItems(), groups=shelfGroups();
+  var out={groups:groups, items:items.map(function(i){
+    return {arxiv:i.arxiv, slug:i.id||null, group:i.group, titleEn:i.titleEn, titleZh:i.titleZh};
+  })};
+  var blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="manifest.json"; a.click();
 }
 
 function open(p, first){
@@ -783,6 +979,31 @@ document.getElementById("fsDown").onclick=function(){ S.fs=Math.max(13,S.fs-1); 
 function applyFs(){ document.documentElement.style.setProperty("--fs",S.fs+"px"); store.set("fs",S.fs); }
 document.getElementById("btnNav").onclick=function(){ document.body.classList.toggle("nav"); };
 
+/* ---------- 书架交互 ---------- */
+document.getElementById("btnShelf").onclick=function(){ openShelf(); };
+document.getElementById("shelfClose").onclick=closeShelf;
+document.getElementById("shelfExport").onclick=shelfExport;
+document.getElementById("shelfQ").oninput=function(){ renderShelf(); };
+document.getElementById("shelfFilter").addEventListener("click",function(e){
+  var b=e.target.closest(".chipbtn"); if(!b) return;
+  this.dataset.g=b.dataset.g; renderShelf();
+});
+document.getElementById("shelfBody").addEventListener("click",function(e){
+  var o=e.target.closest("[data-open]");
+  if(o){ var p=byId(o.dataset.open); if(p){ open(p); closeShelf(); } return; }
+  var t=e.target.closest("[data-todo]");
+  if(t){
+    alert("这本还没翻译。\n\n在仓库根目录运行：\n\n"+
+      "python tools/pdf_to_json.py papers/"+t.dataset.todo+".pdf "+t.dataset.todo+"\n"+
+      "（然后按 docs/USAGE.md 的路线翻译，最后 python build_paper.py）");
+  }
+});
+document.getElementById("shelfBody").addEventListener("change",function(e){
+  var s=e.target.closest("[data-move]"); if(!s) return;
+  var ov=shelfOverrides(); ov[s.dataset.move]=s.value; store.set("shelfGroups", ov);
+  buildLibrary(); renderShelf();
+});
+
 /* theme */
 document.getElementById("btnTheme").onclick=function(){
   var order=["theme-light","theme-sepia","theme-dark"];
@@ -797,7 +1018,7 @@ function openDrawer(title,html){
   dTitle.textContent=title; dBody.innerHTML=html; drawer.classList.add("on");
 }
 drawer.addEventListener("click",function(e){ if(e.target.hasAttribute("data-close")||e.target.closest("[data-close]")) drawer.classList.remove("on"); });
-document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ drawer.classList.remove("on"); tip.classList.remove("on"); pinned=null; xcard.classList.remove("on"); if(typeof hideCite==="function") hideCite(); } });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ drawer.classList.remove("on"); tip.classList.remove("on"); pinned=null; xcard.classList.remove("on"); if(typeof hideCite==="function") hideCite(); if(typeof closeShelf==="function") closeShelf(); } });
 
 document.getElementById("btnVocab").onclick=function(){
   var keys=Object.keys(S.vocab);

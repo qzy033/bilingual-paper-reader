@@ -79,6 +79,42 @@ def copy_assets(slug, folder):
     return n
 
 
+def build_shelf(slug2id):
+    """书架 = papers/manifest.json 里的条目（已译/待译）+ 未登记但已有译本的论文。"""
+    mp = os.path.join(BASE, "papers", "manifest.json")
+    manifest = {}
+    if os.path.exists(mp):
+        manifest = json.load(open(mp, encoding="utf-8"))
+    items, listed = [], set()
+    for it in manifest.get("items", []):
+        arxiv = (it.get("arxiv") or "").strip()
+        slug = it.get("slug") or ""
+        pid = slug2id.get(slug)
+        pdf = os.path.join(BASE, "papers", arxiv + ".pdf") if arxiv else ""
+        has_pdf = bool(arxiv) and os.path.exists(pdf)
+        if not pid and not has_pdf and it.get("optional"):
+            continue
+        if pid:
+            listed.add(pid)
+        items.append({
+            "arxiv": arxiv,
+            "id": pid or "",
+            "slug": slug,
+            "group": it.get("group") or "未分组",
+            "titleEn": it.get("titleEn") or "",
+            "titleZh": it.get("titleZh") or "",
+            "status": "ready" if pid else "todo",
+            "pdf": ("../papers/%s.pdf" % arxiv) if has_pdf else "",
+            "note": it.get("note") or "",
+        })
+    for slug, pid in sorted(slug2id.items()):
+        if pid in listed:
+            continue
+        items.append({"arxiv": "", "id": pid, "slug": slug, "group": "未分组",
+                      "titleEn": "", "titleZh": "", "status": "ready", "pdf": "", "note": ""})
+    return {"groups": manifest.get("groups", []), "items": items}
+
+
 def main():
     only = sys.argv[1] if len(sys.argv) > 1 else None
     folders = [f for f in sorted(glob.glob(os.path.join(DATA, "*"))) if os.path.isdir(f)]
@@ -88,6 +124,7 @@ def main():
         raise SystemExit("data/ 下没有论文目录")
 
     papers, total_bad = [], 0
+    slug2id, folder_of = {}, {}
     for folder in folders:
         slug, meta, sections, terms = load_paper(folder)
         problems, pairs, n_terms = qa(slug, sections)
@@ -98,17 +135,25 @@ def main():
         refs = meta.get("references", [])
         print("%-28s 章节 %2d · 对照段 %3d · 术语 %2d · 英译表 %2d · 文献 %2d · 图 %d"
               % (slug, len(sections), pairs, n_terms, len(terms), len(refs), n_img))
+        slug2id[slug] = meta["id"]
+        folder_of[meta["id"]] = slug
         papers.append({"id": meta["id"], "meta": meta["meta"],
                        "sections": sections, "glossary": meta.get("glossary", []),
                        "termEn": terms, "references": refs})
 
+    shelf = build_shelf(slug2id)
+
     js = ("/* 双语论文阅读器 · 论文库\n"
           " * 由 build_paper.py 自动生成，请勿手改。\n"
           " * 数据格式见 reader/FORMAT.md\n"
-          " */\nwindow.PAPERS = " + json.dumps(papers, ensure_ascii=False, indent=1) + ";\n")
+          " */\nwindow.PAPERS = " + json.dumps(papers, ensure_ascii=False, indent=1) + ";\n"
+          "\n/* 书架：papers/manifest.json + 已有的译本 */\n"
+          "window.SHELF = " + json.dumps(shelf, ensure_ascii=False, indent=1) + ";\n")
     os.makedirs(os.path.dirname(OUT_JS), exist_ok=True)
     open(OUT_JS, "w", encoding="utf-8").write(js)
-    print("已生成 %s（%.0f KB，共 %d 篇）" % (OUT_JS, os.path.getsize(OUT_JS) / 1024, len(papers)))
+    print("已生成 %s（%.0f KB，共 %d 篇；书架 %d 本，其中已译 %d）"
+          % (OUT_JS, os.path.getsize(OUT_JS) / 1024, len(papers), len(shelf["items"]),
+             sum(1 for i in shelf["items"] if i["status"] == "ready")))
     if total_bad:
         print("注意：有 %d 处格式问题，已在上方标出" % total_bad)
         sys.exit(1)
