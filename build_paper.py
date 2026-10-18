@@ -116,10 +116,15 @@ def build_shelf(slug2id):
 
 
 def main():
-    only = sys.argv[1] if len(sys.argv) > 1 else None
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    public = "--public" in sys.argv
+    only = args[0] if args else None
     folders = [f for f in sorted(glob.glob(os.path.join(DATA, "*"))) if os.path.isdir(f)]
     if only:
         folders = [f for f in folders if os.path.basename(f) == only]
+    if public:
+        # 只打包可公开的内容（示例论文）；论文正文与译文只留本地
+        folders = [f for f in folders if os.path.basename(f) == "demo"]
     if not folders:
         raise SystemExit("data/ 下没有论文目录")
 
