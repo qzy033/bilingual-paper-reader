@@ -34,10 +34,30 @@ git clone <this-repo> && cd bilingual-paper-reader
 
 ## 把自己的论文做成一本
 
+一条命令（Windows / macOS / Linux 都行）：
+
+```powershell
+# Windows
+$env:OPENAI_API_KEY="sk-..."          # 任何 OpenAI 兼容端点，可用 OPENAI_BASE_URL / MODEL 覆盖
+.\make.ps1 -Pdf "C:\papers\some-paper.pdf" -Slug my-paper -Package
+```
+
 ```bash
-python tools/pdf_to_json.py ~/papers/some-paper.pdf my-paper   # 1. 抽文本、自动分节
-# 2. 翻译 data/my-paper/*.json 里的 "zh" 字段，术语写成 [[术语|解释]]
-python build_paper.py                                         # 3. 打包
+# macOS / Linux
+export OPENAI_API_KEY=sk-...
+./make.sh ~/papers/some-paper.pdf my-paper --package
+```
+
+脚本做四件事：`pdf_to_json.py` 抽文本分节 → `translate.py` 逐段翻译并生成术语表 →
+`build_paper.py` 构建 → `package.py` 打 zip。想自己译就加 `-NoTranslate`。
+
+只跑其中一步也行：
+
+```bash
+python tools/pdf_to_json.py paper.pdf my-paper     # 1. 抽文本、自动分节
+python tools/translate.py --slug my-paper --with-terms   # 2. 自动翻译（可 --dry-run 先看量）
+python build_paper.py                              # 3. 打包进阅读器
+python tools/package.py                            # 4. 打成可分发的 zip
 ```
 
 刷新 `reader/index.html`，左侧「论文库」里就多了一本。
