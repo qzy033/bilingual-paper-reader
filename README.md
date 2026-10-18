@@ -61,7 +61,8 @@ Cursor 这类能读写本地文件的 agent 说：
 > 生成 `terms.json`，最后跑 `python build_paper.py` 把 `!` 修完。
 
 它会判断哪里该拆段、哪个词值得解释、公式怎么重写、表格数字对应哪一列——比逐段直译好读得多。
-完整提示词见 [docs/USAGE.md §4.2](docs/USAGE.md)（可整段复制）。
+完整提示词见 [docs/USAGE.md §4.2](docs/USAGE.md)（可整段复制）；操作手册见
+[`reader/WORKFLOW.md`](reader/WORKFLOW.md)（范围分级、逐页看图流程、验收清单与红线）。
 
 **路线 B——脚本批量翻译（适合长文、想先出草稿）。** 一条命令：
 
@@ -93,6 +94,20 @@ python tools/package.py                                  # 5. 打成可分发的
 刷新 `reader/index.html`，左侧「论文库」里就多了一本。
 数据格式、块类型、术语与引用的写法、给 AI 的续写提示词，全在
 [`reader/FORMAT.md`](reader/FORMAT.md)。
+
+## 逐页看图 + 三个校验工具
+
+双栏、公式、表格多的论文，纯文本抽取会把版面顺序打乱、公式拆成碎片。仓库自带这几件小工具：
+
+| 工具 | 一行说明 |
+|---|---|
+| `python tools/pdf_pages.py paper.pdf slug` | 每页渲染成 PNG + 同页文本，对着页面图抄写与翻译，位置、上下标、表头都不会错 |
+| `python tools/crop.py find/crop` | `find` 找出页面里的图形块坐标，`crop` 按坐标裁图，配中英标签最省事 |
+| `python tools/check_paper.py slug` | 严格自查：空译文、`[[ ]]` 不配对、中文里混入英文双引号、中文过短、术语命中率、表/图/公式缺没缺 |
+| `python tools/refs_from_pdf.py paper.pdf slug` | 从 PDF 末尾解析编号参考文献，自动生成 `references`（正文的 `[13]` 才有悬停浮窗） |
+
+`reader/WORKFLOW.md` 是写给接手的 AI 的操作手册：范围分级（短论文全文逐句，长论文主文逐句 + 附录结构化）、
+逐页工作循环、表格 / 图 / 公式的精细写法、红线和验收清单。
 
 > 也可以把单篇 JSON 直接**拖进浏览器窗口**，不入库、不落盘。
 
