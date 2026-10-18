@@ -1,0 +1,42 @@
+{
+  "id": "s2",
+  "num": "2",
+  "title": "一张图看完",
+  "titleEn": "The Whole Layer at a Glance",
+  "page": "示例 p.2",
+  "lead": "把前两节的三句话画成图，就是一个注意力层的全部；Transformer 里剩下的都是重复和搬运。",
+  "blocks": [
+    {
+      "type": "fig",
+      "src": "assets/demo-attention-primer/attention-flow.svg",
+      "size": "m",
+      "label": "图 1",
+      "alt": "Scaled dot-product attention flow",
+      "zh": "缩放点积注意力的数据流：查询与键先做矩阵乘法得到分数表，除以 √d<sub>k</sub> 缩放，softmax 变成权重，最后与值相乘得到输出。",
+      "en": "Figure 1: Scaled dot-product attention, drawn for this demo.",
+      "labels": [
+        ["Q / K / V", "查询 / 键 / 值"],
+        ["MatMul", "矩阵乘法"],
+        ["Scale 1/√d_k", "缩放：除以 √d_k"],
+        ["Softmax", "归一化成权重"],
+        ["Weighted sum", "加权求和，得到输出"]
+      ]
+    },
+    {
+      "type": "pair",
+      "en": "Queries and keys meet in a matrix product, the scores are scaled and normalised with softmax, and the resulting weights are applied to the values. Everything else in a Transformer is repetition and bookkeeping.",
+      "zh": "查询与键先做矩阵乘法，分数经过缩放、再由 softmax 归一化，得到的权重作用在值上。Transformer 里其余的部分，都是重复和搬运。"
+    },
+    {
+      "type": "pair",
+      "en": "When the layer sits between encoder and decoder, the queries come from the decoder while keys and values come from the encoder, so each output position can pick information from the whole input sentence [2].",
+      "zh": "当这一层夹在编码器和解码器之间时，查询来自解码器，而键和值来自编码器——这样每个输出位置都能从整句输入里取信息[2]。"
+    },
+    {
+      "type": "note",
+      "label": "演示注",
+      "html": "图里的方框顺序就是公式 (1) 的求值顺序：先乘、再缩放、再 softmax、最后与值相乘。数值没有画出来，因为真正的矩阵通常有几千列。",
+      "en": "The order of the boxes is exactly the order of the operations in Equation (1)."
+    }
+  ]
+}

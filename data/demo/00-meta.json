@@ -1,0 +1,36 @@
+{
+  "id": "demo-attention-primer",
+  "meta": {
+    "title": "How Attention Works: A One-Page Primer",
+    "titleZh": "注意力是怎么工作的：一页入门",
+    "authors": "Demo Author (this repository)",
+    "affil": "示例论文 · 全部文字由本项目原创撰写",
+    "venue": "演示文档，非真实论文 · 2026",
+    "blurb": "<b>这是示例书：</b>正文、译文、术语解释、引用浮窗全部可交互，用来演示阅读器的每一项功能；内容为本项目原创，可直接 fork 修改。",
+    "chips": ["示例 / demo", "注意力机制", "12 段对照", "CC0 内容"],
+    "source": "原创演示文本（非任何已发表论文）",
+    "note": "本示例的文字与插图由本项目原创，以 CC0-1.0 释出，可自由使用；其中提到的两篇论文仅为书目引用。"
+  },
+  "glossary": [
+    ["token", "词元", "模型处理的最小单位。可能是一个词、一个子词片段，甚至一个字符。"],
+    ["query / key / value", "查询 / 键 / 值", "三种角色：查询是「我想找什么」，键是「我这里有什么」，值是「我实际给出的内容」。"],
+    ["dot product", "点积", "两个向量对应分量相乘再相加，得到一个数，用来衡量方向有多一致。"],
+    ["softmax", "归一化指数函数", "把一串任意大小的分数变成加起来等于 1 的权重。"],
+    ["masked attention", "带掩码的注意力", "把未来位置遮住（权重设成 0），使解码器只能用已经生成的内容做预测。"],
+    ["multi-head", "多头", "并行做多组注意力，每组关注不同的关系模式，最后拼接起来。"],
+    ["self-attention", "自注意力", "查询、键、值都来自同一条序列的注意力。"],
+    ["encoder-decoder attention", "编码器-解码器注意力", "查询来自解码器、键和值来自编码器输出的注意力。"]
+  ],
+  "references": [
+    {
+      "n": 1,
+      "text": "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin. Attention is all you need. In NIPS, 2017.",
+      "url": "https://arxiv.org/abs/1706.03762"
+    },
+    {
+      "n": 2,
+      "text": "Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align and translate. CoRR, abs/1409.0473, 2014.",
+      "url": "https://arxiv.org/abs/1409.0473"
+    }
+  ]
+}

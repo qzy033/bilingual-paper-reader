@@ -1,0 +1,14 @@
+{
+  "词元": "token",
+  "投影": "projected",
+  "查询": "query",
+  "键": "key",
+  "值": "value",
+  "点积": "dot product",
+  "softmax": "softmax",
+  "自注意力": "self-attention",
+  "带掩码": "masked",
+  "注意力": "attention",
+  "多头": "heads",
+  "拼接": "concatenated"
+}

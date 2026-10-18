@@ -1,0 +1,17 @@
+# 本地论文数据（示例除外）
+data/*
+!data/demo/
+!data/README.md
+
+# 本地产物
+*.pdf
+*.png.tmp
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# 临时文件
+_s*.html
+preview-*.png

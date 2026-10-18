@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" font-family="Cambria, 'Noto Serif SC', Georgia, serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8375"/>
+    </marker>
+  </defs>
+
+  <g stroke="#8a8375" stroke-width="1.4" marker-end="url(#arrow)" fill="none">
+    <path d="M112 78 H168"/>
+    <path d="M112 156 H168 V128"/>
+    <path d="M280 125 H318"/>
+    <path d="M430 125 H468"/>
+    <path d="M580 125 H618"/>
+    <path d="M112 232 H660 V155"/>
+    <path d="M712 125 H756"/>
+  </g>
+
+  <g font-size="15" fill="#1f1c17">
+    <g fill="#f6f1e4" stroke="#8d6a3c" stroke-width="1.4">
+      <rect x="40" y="56" width="72" height="44" rx="7"/>
+      <rect x="40" y="134" width="72" height="44" rx="7"/>
+      <rect x="40" y="210" width="72" height="44" rx="7"/>
+    </g>
+    <g text-anchor="middle" font-style="italic" font-size="17">
+      <text x="76" y="84">Q</text>
+      <text x="76" y="162">K</text>
+      <text x="76" y="238">V</text>
+    </g>
+
+    <g fill="#eef3f5" stroke="#1e4f6b" stroke-width="1.4">
+      <rect x="170" y="92" width="110" height="66" rx="7"/>
+      <rect x="320" y="100" width="110" height="50" rx="7"/>
+      <rect x="470" y="100" width="110" height="50" rx="7"/>
+      <rect x="620" y="100" width="92" height="50" rx="7"/>
+    </g>
+    <g text-anchor="middle">
+      <text x="225" y="120" font-style="italic">QK<tspan font-size="11" dy="-5">T</tspan></text>
+      <text x="225" y="142" font-size="12" fill="#5a5348">matrix product</text>
+      <text x="375" y="122">÷ √d<tspan font-size="11" dy="4">k</tspan></text>
+      <text x="375" y="141" font-size="12" fill="#5a5348">scale</text>
+      <text x="525" y="122">softmax</text>
+      <text x="525" y="141" font-size="12" fill="#5a5348">weights</text>
+      <text x="666" y="122">× V</text>
+      <text x="666" y="141" font-size="12" fill="#5a5348">weighted sum</text>
+    </g>
+
+    <g font-size="13" fill="#8a8375" text-anchor="middle">
+      <text x="790" y="120">output</text>
+      <text x="790" y="138">(context)</text>
+    </g>
+  </g>
+</svg>

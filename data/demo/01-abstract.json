@@ -1,0 +1,20 @@
+{
+  "id": "s0",
+  "num": "0",
+  "title": "摘要",
+  "titleEn": "Abstract",
+  "page": "示例 p.1",
+  "lead": "这是一本示例书：正文、译文、术语、文献浮窗都是真的，只是内容由本项目原创，用来演示阅读器怎么用。",
+  "blocks": [
+    {
+      "type": "pair",
+      "en": "An attention layer lets every token in a sentence look at every other token, score how relevant each one is, and pull in a weighted mixture of their information. This note explains the idea with as little notation as possible.",
+      "zh": "注意力层让句子里的每个[[词元|token：模型处理的最小单位，可能是一个词、一个子词片段，甚至一个字符。]]都能「看」到其他所有词元，给每个词元的相关程度打分，再按权重把它们的信息混合进来。这篇短文用尽量少的数学符号把这个想法讲清楚。"
+    },
+    {
+      "type": "pair",
+      "en": "Nothing here is new: the mechanism described below is scaled dot-product attention, introduced for machine translation in 2017 [1]. Every sentence in this note was written for this demo.",
+      "zh": "这里没有提出任何新东西：下面描述的机制就是 2017 年为机器翻译提出的缩放点积注意力[1]。本文的每一句话都是为这个演示专门写的。"
+    }
+  ]
+}

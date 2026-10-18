@@ -1,0 +1,18 @@
+{
+  "id": "sR",
+  "num": "R",
+  "title": "参考文献",
+  "titleEn": "References",
+  "page": "示例 p.2",
+  "lead": "两条书目引用，用来演示正文里的 [1]、[2] 悬停浮窗。它们只是事实性的书目信息，不是本文内容的一部分。",
+  "blocks": [
+    {
+      "type": "pair",
+      "en": "References are kept in their original form so that they can be looked up directly by title.",
+      "zh": "文献条目保留原样，方便按标题检索。正文里凡是 [1] 这样的编号，悬停就会弹出这个小窗。"
+    },
+    {
+      "type": "refs"
+    }
+  ]
+}

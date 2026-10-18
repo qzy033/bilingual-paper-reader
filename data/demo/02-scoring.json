@@ -1,0 +1,44 @@
+{
+  "id": "s1",
+  "num": "1",
+  "title": "给每个词打分",
+  "titleEn": "Scoring Tokens",
+  "page": "示例 p.1",
+  "lead": "这一节只有三句话，是全文的骨架：三个角色、一个分数、一次加权求和。",
+  "blocks": [
+    {
+      "type": "pair",
+      "en": "Each token is first projected into three vectors: a query, a key and a value. Think of the query as a question, the key as the label on a drawer, and the value as what is inside the drawer.",
+      "zh": "每个词元先被[[投影|projected：乘一个矩阵，把向量变换到另一个空间，相当于换一套坐标描述同一件事。]]成三个向量：[[查询|query：这个位置「想找什么」。]]、[[键|key：这个位置「有什么」。]]和[[值|value：这个位置真正交出去的内容。]]。可以把查询想成一个问题，键想成抽屉上的标签，值想成抽屉里的东西。"
+    },
+    {
+      "type": "pair",
+      "en": "The score between two tokens is the dot product of one token's query with the other token's key. A higher score means the two are more relevant to each other under the current projection.",
+      "zh": "两个词元之间的分数，就是一个词元的查询与另一个词元的键的[[点积|dot product：对应分量相乘再相加，得到一个数，衡量两个向量有多「合拍」。]]。分数越高，说明在当前投影下两者越相关。"
+    },
+    {
+      "type": "pair",
+      "en": "A softmax over the row turns the scores into weights that sum to one, and the output for a token is the weighted sum of all the values.",
+      "zh": "对这一行分数做 [[softmax|把一串任意大小的分数变成加起来等于 1 的权重，分数越高占比越大。]]，就得到加起来等于 1 的权重；某个词元的输出，就是所有值的加权和。"
+    },
+    {
+      "type": "eq",
+      "no": "(1)",
+      "html": "Attention(Q, K, V) = softmax( <span class='frac'><span class='q'>QK<sup>T</sup></span><span class='d'>√<span class='var'>d</span><sub>k</sub></span></span> ) V"
+    },
+    {
+      "type": "raw",
+      "html": "<div class=\"lead\"><b>这个公式在说什么</b>QK<sup>T</sup> 是「每个词和每个词有多像」的分数表；除以 √d<sub>k</sub> 防止分数过大；softmax 把每一行变成权重；乘 V 就是按权重把信息取回来。一句话：每个词的新表示 = 所有词的信息，按相关程度加权平均。</div>"
+    },
+    {
+      "type": "pair",
+      "en": "The same layer appears in three places in a translation model. In the encoder it is self-attention: queries, keys and values all come from the same sequence, so every position can look at every other position [1].",
+      "zh": "在翻译模型里，同一个层会出现在三个地方。在编码器中它是[[自注意力|self-attention：查询、键、值都来自同一条序列，所以每个位置都能看到其他所有位置。]]：查询、键、值都来自同一条序列，所以每个位置都能看到其他所有位置[1]。"
+    },
+    {
+      "type": "pair",
+      "en": "In the decoder it is masked self-attention: a position may only look at positions up to and including itself, so a prediction never sees the token it is supposed to produce.",
+      "zh": "在解码器中它是[[带掩码|masked：把不该看的位置在 softmax 之前设成 −∞，权重就变成 0，相当于看不见。]]的自注意力：某个位置只能看到「直到并包括它自己」的位置，这样预测时永远不会偷看到它该生成的那个词。"
+    }
+  ]
+}

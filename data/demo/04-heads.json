@@ -1,0 +1,30 @@
+{
+  "id": "s3",
+  "num": "3",
+  "title": "为什么用多头",
+  "titleEn": "Why Several Heads",
+  "page": "示例 p.2",
+  "lead": "一个头只能表达一种「加权方式」，而句子里的关系不止一种。这一节用一张小表说明多头为什么不加价。",
+  "blocks": [
+    {
+      "type": "pair",
+      "en": "One head can only produce one averaging pattern. Running several heads in parallel lets the layer attend to several relations at once: one head may follow the previous token, another may connect a pronoun to the noun it refers to.",
+      "zh": "一个头只能给出一种加权方式。并行跑几个[[多头|multi-head：并排做多组注意力，每组关注不同的关系，最后拼接。]]，就能同时关注好几种关系：某个头盯着前一个词，另一个头把代词和它指的名词连起来。"
+    },
+    {
+      "type": "pair",
+      "en": "Each head is narrower than the full model, so the cost of many heads stays close to the cost of one wide head.",
+      "zh": "每个头的维度都比整个模型窄，所以「很多个头」的总开销，和「一个很宽的头」差不多。"
+    },
+    {
+      "type": "table",
+      "caption": "",
+      "html": "<caption><b>表 1</b> 固定 d<sub>model</sub> = 512 时，头数与每头维度的关系（示意值，只为说明「宽度被摊薄」）。</caption><table><thead><tr><th>头数 h</th><th>每头维度 d<sub>k</sub> = 512 / h</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>512</td><td>单个宽头，只能表达一种加权模式</td></tr><tr><td>4</td><td>128</td><td>开始能分工</td></tr><tr><td>8</td><td>64</td><td>常见的默认设置</td></tr><tr><td>16</td><td>32</td><td>头太多，每个都太窄，效果反而下降</td></tr></tbody></table>"
+    },
+    {
+      "type": "pair",
+      "en": "The outputs of the heads are concatenated and projected once more, which lets the model mix what the individual heads found.",
+      "zh": "各个头的输出会被[[拼接|concatenate：把几个向量首尾接成一个更长的向量。]]起来，再投影一次，让模型把各头找到的东西混合起来。"
+    }
+  ]
+}
