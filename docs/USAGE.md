@@ -316,6 +316,14 @@ python tools/package.py --version 0.2.0
 
 注意：`package.py` 只收 `data/demo/`，**你自己的论文数据不会被打进去**，这是有意的（见 `NOTICE.md`）。
 
+同理，提交到 git 之前建议用**只含示例**的方式重新生成阅读器数据：
+
+```bash
+python build_paper.py --public    # 只打包 data/demo，library.js 与 assets 保持可公开
+```
+
+否则 `reader/papers/library.js` 里会带上你译的论文正文。
+
 ---
 
 ## 8. 一条命令走完
