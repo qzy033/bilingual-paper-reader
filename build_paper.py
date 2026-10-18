@@ -1,4 +1,4 @@
-"""
+﻿"""
 把 data/<slug>/*.json 组装成阅读器可加载的数据文件。
 
 用法:
@@ -100,7 +100,7 @@ def build_shelf(slug2id):
             "arxiv": arxiv,
             "id": pid or "",
             "slug": slug,
-            "group": it.get("group") or "未分组",
+            "group": it.get("group") or "",
             "titleEn": it.get("titleEn") or "",
             "titleZh": it.get("titleZh") or "",
             "status": "ready" if pid else "todo",
@@ -110,7 +110,7 @@ def build_shelf(slug2id):
     for slug, pid in sorted(slug2id.items()):
         if pid in listed:
             continue
-        items.append({"arxiv": "", "id": pid, "slug": slug, "group": "未分组",
+        items.append({"arxiv": "", "id": pid, "slug": slug, "group": "",
                       "titleEn": "", "titleZh": "", "status": "ready", "pdf": "", "note": ""})
     return {"groups": manifest.get("groups", []), "items": items}
 
@@ -166,3 +166,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

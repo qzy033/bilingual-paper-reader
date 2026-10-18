@@ -253,8 +253,43 @@ tr.hl-row td{background:var(--tint);font-weight:600}
 .smove{margin-left:auto;font-family:var(--sans);font-size:10.5px;border:1px solid var(--rule);border-radius:6px;
   background:var(--sheet);color:var(--ink2);padding:3px 2px;cursor:pointer}
 .sempty{font-family:var(--sans);font-size:13px;color:var(--muted);padding:40px 0}
+/* 分组标题上的小按钮、阅读进度条 */
+.sgroup h3{display:flex;align-items:center;gap:6px}
+.sgroup h3 .gname{cursor:text}
+.sgroup h3 .gtool{font-family:var(--sans);font-size:9.5px;letter-spacing:0;color:var(--muted);background:none;
+  border:0;padding:0 2px;cursor:pointer;font-weight:400}
+.sgroup h3 .gtool:hover{color:var(--accent2)}
+.sgroup h3 .gtool.del:hover{color:#b4482c}
+.sgroup h3 .gtool.only{margin-left:auto}
+.sgroup h3 .gtool.only:hover{color:var(--accent)}
+.pbar{height:3px;margin:7px 0 0;background:var(--rule);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--accent2);width:0}
+.sprog{font-family:var(--sans);font-size:10px;color:var(--muted);margin-left:2px}
+.sprog b{color:var(--accent2);font-weight:600}
+/* 多选：卡片角上的勾选框 + 底部批量操作条 */
+.scard{position:relative}
+.scard .stop{padding-right:20px}
+.pick{position:absolute;top:9px;right:8px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0;transition:opacity .12s;z-index:2}
+.scard:hover .pick,.scard.sel .pick{opacity:1}
+.pick input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;margin:0}
+.scard.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.selbar{position:fixed;left:50%;bottom:22px;z-index:6;display:flex;align-items:center;gap:9px;
+  padding:9px 14px;background:var(--sheet);border:1px solid var(--accent);border-radius:11px;
+  box-shadow:0 18px 44px -20px rgba(60,45,20,.55);font-family:var(--sans);font-size:12px;
+  transform:translate(-50%,90px);opacity:0;pointer-events:none;transition:.18s}
+.selbar.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.selbar b{font-weight:600;color:var(--accent)}
+.selbar select{font-family:var(--sans);font-size:11.5px;border:1px solid var(--rule);border-radius:7px;
+  background:var(--sheet);color:var(--ink2);padding:4px 6px;cursor:pointer}
+.selbar button{font-family:var(--sans);font-size:11.5px;border:1px solid var(--rule);background:none;
+  color:var(--ink2);border-radius:7px;padding:4px 9px;cursor:pointer}
+.selbar button.primary{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.selbar button:hover{border-color:var(--accent2);color:var(--accent2)}
+.selbar button.primary:hover{color:var(--sheet);opacity:.92}
 .grp{font-family:var(--sans);font-size:10px;letter-spacing:.18em;color:var(--accent2);margin:14px 0 3px;padding-left:2px}
 .grp i{font-style:normal;color:var(--muted);margin-left:6px;letter-spacing:0}
+.side .papers .sp{font-style:normal;color:var(--accent2);font-weight:600;letter-spacing:0}
 .side .papers button.todo{opacity:.72}
 .side .papers button .dotq{display:inline-block;width:5px;height:5px;border:1px solid var(--muted);border-radius:50%;margin-right:6px}
 
@@ -369,11 +404,13 @@ body.m-zh .tgt{max-width:74ch}
     <div class="sv-title"><b>书架</b><span>Bookshelf</span></div>
     <input id="shelfQ" placeholder="搜标题 / arXiv 号…" autocomplete="off">
     <span class="sv-stat" id="shelfStat"></span>
-    <button class="sv-act" id="shelfExport">导出分组</button>
+    <button class="sv-act" id="shelfNewGroup" title="新建一个分组，名字自己起">＋ 分组</button>
+    <button class="sv-act" id="shelfExport" title="导出为 manifest.json，可放到 papers/ 里长期保存">导出分组</button>
     <button class="sv-close" id="shelfClose">✕</button>
   </div>
   <div class="sv-filter" id="shelfFilter" data-g="全部"></div>
   <div class="sv-body" id="shelfBody"></div>
+  <div class="selbar" id="selBar"></div>
 </div>
 
 <div class="drawer" id="drawer">
@@ -472,16 +509,16 @@ function buildLibrary(){
     });
     return;
   }
-  var groups = shelfGroups();
-  groups.forEach(function(g){
-    var list = items.filter(function(it){ return it.group===g; });
+  shelfBuckets(items).forEach(function(bucket){
+    var g=bucket[0], list=bucket[1];
     if(!list.length) return;
-    box.appendChild(el("div","grp", esc(g) + '<i>' + list.length + '</i>'));
+    if(g || shelfGroups().length) box.appendChild(el("div","grp", esc(g||"未分组") + '<i>' + list.length + '</i>'));
     list.forEach(function(it){
       var b=el("button", it.status==="ready"?"":"todo");
       b.dataset.id=it.id; b.dataset.arxiv=it.arxiv;
+      var pg = it.id ? progressOf(it.id) : null;
       b.innerHTML='<span>'+(it.status==="ready"?'':'<em class="dotq"></em>')+esc(it.titleZh||it.titleEn)+'</span>'+
-        '<small>'+esc(it.titleEn)+'</small>';
+        '<small>'+esc(it.titleEn)+(pg?'　<b class="sp">'+Math.round(pg.pct)+'%</b>':'')+'</small>';
       b.onclick=function(){
         if(it.status==="ready"){ open(byId(it.id)); }
         else { openShelf(it.arxiv); }
@@ -493,8 +530,76 @@ function buildLibrary(){
 
 function byId(id){ return PAPERS.filter(function(p){return p.id===id;})[0]; }
 
-/* ---------- 书架 ---------- */
-function shelfOverrides(){ return store.get("shelfGroups", {}); }
+/* ---------- 书架 / 分组 ---------- */
+/* 分组完全自己管：名字随便起，存在浏览器本地；manifest.json 里若带了分组，
+   只在第一次打开时导入一次，之后以本地为准（可用「导出分组」写回去）。 */
+var SHELF_CACHE = null;
+function shelfState(){
+  if(SHELF_CACHE) return SHELF_CACHE;
+  var s = store.get("shelf", null);
+  if(!s || typeof s!=="object") s = {};
+  if(!Array.isArray(s.groups)) s.groups = [];
+  if(!s.assign || typeof s.assign!=="object") s.assign = {};
+  // 兼容旧版：之前按 arxiv 存的覆盖表
+  var old = store.get("shelfGroups", null);
+  if(old && typeof old==="object"){
+    Object.keys(old).forEach(function(k){ if(old[k] && !s.assign[k]) s.assign[k]=old[k]; });
+  }
+  // 第一次打开：把 manifest.json 里的分组导进来
+  if(!s.seeded){
+    s.seeded = true;
+    var shelf = window.SHELF || {};
+    (shelf.groups||[]).forEach(function(g){ if(g && s.groups.indexOf(g)<0) s.groups.push(g); });
+    (shelf.items||[]).forEach(function(it){
+      var k = it.arxiv || it.slug || "";
+      var g = it.group || "";
+      if(!k || !g) return;
+      if(s.groups.indexOf(g)<0) s.groups.push(g);
+      if(!s.assign[k]) s.assign[k]=g;
+    });
+  }
+  SHELF_CACHE = s;
+  return s;
+}
+function saveShelf(s){ SHELF_CACHE = s; store.set("shelf", s); }
+function itemKey(it){ return it.arxiv || it.id || ""; }
+function groupOf(it){ return shelfState().assign[itemKey(it)] || ""; }
+
+function createGroup(name){
+  name = String(name||"").trim();
+  if(!name) return "";
+  var s = shelfState();
+  if(s.groups.indexOf(name)<0){ s.groups.push(name); saveShelf(s); }
+  return name;
+}
+function renameGroup(from, to){
+  to = String(to||"").trim();
+  var s = shelfState();
+  var i = s.groups.indexOf(from);
+  if(i<0 || !to || to===from) return;
+  if(s.groups.indexOf(to)>=0){ alert("已经有这个分组了："+to); return; }
+  s.groups[i]=to;
+  Object.keys(s.assign).forEach(function(k){ if(s.assign[k]===from) s.assign[k]=to; });
+  saveShelf(s);
+}
+function deleteGroup(name){
+  var s = shelfState();
+  var i = s.groups.indexOf(name);
+  if(i<0) return;
+  s.groups.splice(i,1);
+  Object.keys(s.assign).forEach(function(k){ if(s.assign[k]===name) delete s.assign[k]; });
+  saveShelf(s);
+}
+function moveItem(key, group){
+  var s = shelfState();
+  if(group) s.assign[key]=group; else delete s.assign[key];
+  saveShelf(s);
+}
+function askGroupName(def){
+  var v = prompt("分组名字（自己起，之后可改）：", def||"");
+  return v==null ? "" : String(v).trim();
+}
+
 function statsOf(p){
   var pairs=0, terms=0, chars=0;
   (p.sections||[]).forEach(function(s){
@@ -508,36 +613,68 @@ function statsOf(p){
 }
 function shelfItems(){
   var shelf = window.SHELF || {groups:[], items:[]};
-  var ov = shelfOverrides();
   var items=[], seen={};
   (shelf.items||[]).forEach(function(src){
     var p = src.status==="ready" ? byId(src.id) : null;
-    items.push({
+    var it = {
       arxiv: src.arxiv||"", id: p?p.id:"",
       titleEn: (p && p.meta.title) || src.titleEn || src.arxiv || "",
       titleZh: (p && (p.meta.titleZh||p.meta.title)) || src.titleZh || "",
-      group: ov[src.arxiv] || src.group || "未分组",
       status: p ? "ready" : "todo",
       stats: p ? statsOf(p) : null,
       pdf: src.pdf || (src.arxiv ? "../papers/"+src.arxiv+".pdf" : ""),
       note: src.note || ""
-    });
+    };
+    it.group = groupOf(it);
+    items.push(it);
     if(p) seen[p.id]=1;
   });
   PAPERS.forEach(function(p){
     if(seen[p.id]) return;
-    items.push({arxiv:p.meta.arxiv||"", id:p.id, titleEn:p.meta.title,
-      titleZh:p.meta.titleZh||p.meta.title, group: p.meta.group||"未分组",
-      status:"ready", stats:statsOf(p), pdf:"", note:""});
+    var it = {arxiv:p.meta.arxiv||"", id:p.id, titleEn:p.meta.title,
+      titleZh:p.meta.titleZh||p.meta.title, status:"ready", stats:statsOf(p), pdf:"", note:""};
+    it.group = groupOf(it);
+    items.push(it);
   });
   return items;
 }
-function shelfGroups(){
-  var shelf = window.SHELF || {groups:[]};
-  var items = shelfItems(), out=[];
-  (shelf.groups||[]).forEach(function(g){ if(out.indexOf(g)<0) out.push(g); });
-  items.forEach(function(it){ if(out.indexOf(it.group)<0) out.push(it.group); });
-  return out.filter(function(g){return g!=="未分组";}).concat(out.indexOf("未分组")>=0?["未分组"]:[]);
+function shelfGroups(){ return shelfState().groups.slice(); }
+
+/* 分组 → 条目。没有分组时就是一整片；有分组时，没归组的排最后（g 为空串）。 */
+function shelfBuckets(items){
+  var groups = shelfGroups(), out=[];
+  groups.forEach(function(g){
+    out.push([g, items.filter(function(i){ return i.group===g; })]);
+  });
+  var rest = items.filter(function(i){ return !i.group || groups.indexOf(i.group)<0; });
+  if(groups.length) out.push(["", rest]); else out=[["", items]];
+  return out;
+}
+function progressOf(id){
+  var r = store.get("prog:"+id, null);
+  if(r && typeof r==="object" && typeof r.pct==="number") return r;
+  return null;
+}
+
+/* 多选：勾一批书，一次移进分组 */
+var SEL = {};
+function selKeys(){ return Object.keys(SEL).filter(function(k){ return SEL[k]; }); }
+function selClear(){ SEL = {}; }
+function selToggle(key,on){ if(on) SEL[key]=1; else delete SEL[key]; }
+function renderSelBar(){
+  var bar=document.getElementById("selBar"); if(!bar) return;
+  var keys=selKeys();
+  if(!keys.length){ bar.classList.remove("on"); bar.innerHTML=""; return; }
+  var groups=shelfGroups();
+  bar.innerHTML='<b>已选 '+keys.length+' 本</b>'+
+    '<select id="selGroup" title="选中要移去的分组">'+
+      (groups.length?'':'<option value="">（还没有分组，先新建）</option>')+
+      groups.map(function(g){ return '<option>'+esc(g)+'</option>'; }).join("")+
+      '<option value="__new__">＋ 新建分组…</option>'+
+    '</select>'+
+    '<button class="primary" id="selMove">移入分组</button>'+
+    '<button id="selClear">取消选择</button>';
+  bar.classList.add("on");
 }
 function openShelf(focus){
   var v=document.getElementById("shelfview");
@@ -554,52 +691,84 @@ function renderShelf(){
   var q=(document.getElementById("shelfQ").value||"").trim().toLowerCase();
   var filter=document.getElementById("shelfFilter").dataset.g||"全部";
   var ready=items.filter(function(i){return i.status==="ready";}).length;
+  var ungrouped=items.filter(function(i){return !i.group || groups.indexOf(i.group)<0;}).length;
 
   var chips=['<button class="chipbtn'+(filter==="全部"?" on":"")+'" data-g="全部">全部 '+items.length+'</button>'];
   groups.forEach(function(g){
     var n=items.filter(function(i){return i.group===g;}).length;
-    if(!n) return;
     chips.push('<button class="chipbtn'+(filter===g?" on":"")+'" data-g="'+attr(g)+'">'+esc(g)+' '+n+'</button>');
   });
+  if(groups.length){
+    chips.push('<button class="chipbtn'+(filter==="__none__"?" on":"")+'" data-g="__none__">未分组 '+ungrouped+'</button>');
+  }
+  var vis=items.filter(function(i){
+    if(filter==="__none__") return !i.group || groups.indexOf(i.group)<0;
+    if(filter!=="全部") return i.group===filter;
+    return true;
+  }).filter(function(i){
+    return !q || (i.titleZh+" "+i.titleEn+" "+i.arxiv).toLowerCase().indexOf(q)>=0;
+  });
+  var allSel = vis.length>0 && vis.every(function(i){ return !!SEL[itemKey(i)]; });
+  chips.push('<button class="chipbtn'+(allSel?" on":"")+'" data-selall="1">'+(allSel?"☑ 已全选":"☐ 全选")+'</button>');
   document.getElementById("shelfFilter").innerHTML=chips.join("");
   document.getElementById("shelfStat").textContent = ready+" 本已译 · "+(items.length-ready)+" 本待译";
 
   var html="";
-  groups.forEach(function(g){
-    if(filter!=="全部" && filter!==g) return;
-    var list=items.filter(function(i){return i.group===g;}).filter(function(i){
+  shelfBuckets(items).forEach(function(bucket){
+    var g=bucket[0], list=bucket[1];
+    if(filter==="__none__"){ if(g) return; }
+    else if(filter!=="全部" && filter!==g) return;
+    list=list.filter(function(i){
       if(!q) return true;
       return (i.titleZh+" "+i.titleEn+" "+i.arxiv).toLowerCase().indexOf(q)>=0;
     });
-    if(!list.length) return;
-    html+='<div class="sgroup"><h3>'+esc(g)+'<i>'+list.length+'</i></h3><div class="sgrid">';
+    if(!list.length && !(g && filter===g)) return;
+    var head="";
+    if(g){
+      head='<span class="gname" data-rename="'+attr(g)+'" title="点一下改名字">'+esc(g)+'</span><i>'+list.length+'</i>'+
+        '<button class="gtool" data-picksel="'+attr(g)+'">选择本组</button>'+
+        '<button class="gtool" data-pick="'+attr(g)+'">只看这组</button>'+
+        '<button class="gtool del" data-delgroup="'+attr(g)+'" title="删掉分组，里面的书会回到未分组">删除分组</button>';
+    } else if(groups.length){
+      head='<span class="gname">未分组</span><i>'+list.length+'</i>';
+    }
+    html+='<div class="sgroup">'+(head?'<h3>'+head+'</h3>':'')+'<div class="sgrid">';
+    if(!list.length){
+      html+='<p class="sempty">这一组还是空的：用卡片右下角的「移动到」，把书選进来。</p>';
+    }
     list.forEach(function(i){
-      var s=i.stats;
-      html+='<article class="scard '+(i.status==="ready"?"ready":"todo")+'" data-arxiv="'+attr(i.arxiv)+'">'+
+      var s=i.stats, pg=i.id?progressOf(i.id):null, pct=pg?Math.min(100,Math.round(pg.pct)):0;
+      var opts='<option value=""'+(i.group?"":" selected")+'>未分组</option>'+
+        groups.map(function(g2){return '<option'+(g2===i.group?" selected":"")+'>'+esc(g2)+'</option>';}).join("")+
+        '<option value="__new__">＋ 新建分组…</option>';
+      var key=itemKey(i);
+      html+='<article class="scard '+(i.status==="ready"?"ready":"todo")+(SEL[key]?" sel":"")+'" data-arxiv="'+attr(i.arxiv)+'">'+
+        '<label class="pick" title="勾选后可批量移动到分组"><input type="checkbox" class="cbpick" data-key="'+attr(key)+'"'+(SEL[key]?" checked":"")+'></label>'+
         '<div class="stop"><span class="sdot"></span><span class="sstate">'+(i.status==="ready"?"已译":"待译")+'</span>'+
         (i.arxiv?'<span class="sarx">'+esc(i.arxiv)+'</span>':'')+'</div>'+
         '<h4>'+esc(i.titleZh||i.titleEn)+'</h4>'+
         '<p class="sen">'+esc(i.titleEn)+'</p>'+
         (s?'<div class="sstats"><span>'+s.sections+' 节</span><span>'+s.pairs+' 段对照</span><span>'+s.terms+' 术语</span><span>约 '+s.minutes+' 分钟</span></div>':
             '<div class="sstats"><span>未翻译</span>'+(i.pdf?'<span>PDF 已就位</span>':'')+'</div>')+
+        (pct>=1?'<div class="pbar"><i style="width:'+pct+'%"></i></div>'+
+          '<div class="sprog">读到 <b>'+pct+'%</b>'+(pg.secTitle?'　'+esc(pg.secTitle):'')+'</div>':'')+
         '<div class="sfoot">'+
           (i.status==="ready"
-            ? '<button class="sgo" data-open="'+attr(i.id)+'">继续阅读 →</button>'
+            ? '<button class="sgo" data-open="'+attr(i.id)+'">'+(pct>=1?'继续阅读 →':'开始阅读 →')+'</button>'
             : '<button class="sgo ghost" data-todo="'+attr(i.arxiv)+'">怎么译？</button>'+
               (i.pdf?'<a class="slink" href="'+attr(i.pdf)+'" target="_blank" rel="noopener">PDF ↗</a>':''))+
-          '<select class="smove" data-move="'+attr(i.arxiv||i.id)+'" title="移动到分组">'+
-            groups.map(function(g){return '<option'+(g===i.group?" selected":"")+'>'+esc(g)+'</option>';}).join("")+
-          '</select>'+
+          '<select class="smove" data-move="'+attr(itemKey(i))+'" title="移动到分组">'+opts+'</select>'+
         '</div></article>';
     });
     html+='</div></div>';
   });
   body.innerHTML = html || '<p class="sempty">没有匹配的论文。</p>';
+  renderSelBar();
 }
 function shelfExport(){
-  var items=shelfItems(), groups=shelfGroups();
-  var out={groups:groups, items:items.map(function(i){
-    return {arxiv:i.arxiv, slug:i.id||null, group:i.group, titleEn:i.titleEn, titleZh:i.titleZh};
+  var items=shelfItems(), s=shelfState();
+  var out={groups:s.groups.slice(), items:items.map(function(i){
+    return {arxiv:i.arxiv, slug:i.id||null, group:i.group||"", titleEn:i.titleEn, titleZh:i.titleZh};
   })};
   var blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
   var a=document.createElement("a");
@@ -615,9 +784,24 @@ function open(p, first){
   });
   render(p);
   buildTOC(p);
-  if(!first){ window.scrollTo(0,0); }
-  var pos = store.get("pos:"+p.id,0);
-  if(pos>50) setTimeout(function(){ window.scrollTo(0,pos); }, 60);
+  /* 恢复上次读到的地方：优先按「最后一节」定位，其次按像素 */
+  var pg = progressOf(p.id);
+  var legacy = store.get("pos:"+p.id, 0);
+  var pos = (pg && pg.y) || (typeof legacy==="number" ? legacy : 0) || 0;
+  if(!first && !pos) window.scrollTo(0,0);
+  if(pos>50){
+    var moved=false, detect=function(){ moved=true; };
+    ["wheel","touchstart","keydown"].forEach(function(ev){ window.addEventListener(ev, detect, {once:true, passive:true}); });
+    var restore=function(){
+      if(moved) return;
+      var t = (pg && pg.sec) ? document.getElementById(pg.sec) : null;
+      if(t){ window.scrollTo(0, Math.max(0, t.offsetTop-60)); return; }
+      window.scrollTo(0, pos);
+    };
+    setTimeout(restore, 60);
+    setTimeout(restore, 420);
+    setTimeout(function(){ window.removeEventListener("wheel",detect); window.removeEventListener("touchstart",detect); }, 1000);
+  }
   document.body.classList.remove("nav");
 }
 
@@ -644,6 +828,7 @@ function render(p){
   /* sections */
   (p.sections||[]).forEach(function(sec){
     var s=el("section","sec"); s.id=sec.id;
+    s.dataset.label=(sec.num?sec.num+" · ":"")+(sec.title||"");
     var h=el("div","sec-head");
     h.innerHTML='<div class="sec-num">'+esc(sec.num||"")+'</div>'+
       '<div class="sec-title"><h2>'+esc(sec.title||"")+'</h2>'+
@@ -987,11 +1172,44 @@ document.getElementById("shelfExport").onclick=shelfExport;
 document.getElementById("shelfQ").oninput=function(){ renderShelf(); };
 document.getElementById("shelfFilter").addEventListener("click",function(e){
   var b=e.target.closest(".chipbtn"); if(!b) return;
+  if(b.dataset.selall){
+    var cbs=document.querySelectorAll("#shelfBody .cbpick");
+    var keys=Array.prototype.map.call(cbs,function(c){ return c.dataset.key; });
+    var every=keys.length>0 && keys.every(function(k){ return !!SEL[k]; });
+    keys.forEach(function(k){ selToggle(k, !every); });
+    renderShelf();
+    return;
+  }
   this.dataset.g=b.dataset.g; renderShelf();
 });
 document.getElementById("shelfBody").addEventListener("click",function(e){
   var o=e.target.closest("[data-open]");
   if(o){ var p=byId(o.dataset.open); if(p){ open(p); closeShelf(); } return; }
+  var rn=e.target.closest("[data-rename]");
+  if(rn){
+    var to=prompt("新的分组名：", rn.dataset.rename);
+    if(to && to.trim()){ renameGroup(rn.dataset.rename, to.trim()); buildLibrary(); renderShelf(); }
+    return;
+  }
+  var dg=e.target.closest("[data-delgroup]");
+  if(dg){
+    var g=dg.dataset.delgroup;
+    if(confirm("删除分组「"+g+"」？里面的书会回到「未分组」，书本身不受影响。")){
+      deleteGroup(g); buildLibrary(); renderShelf();
+    }
+    return;
+  }
+  var pk=e.target.closest("[data-pick]");
+  if(pk){ document.getElementById("shelfFilter").dataset.g=pk.dataset.pick; renderShelf(); return; }
+  var ps=e.target.closest("[data-picksel]");
+  if(ps){
+    var grp=ps.closest(".sgroup");
+    if(grp){
+      Array.prototype.forEach.call(grp.querySelectorAll(".cbpick"),function(c){ selToggle(c.dataset.key,true); });
+      renderShelf();
+    }
+    return;
+  }
   var t=e.target.closest("[data-todo]");
   if(t){
     alert("这本还没翻译。\n\n在仓库根目录运行：\n\n"+
@@ -1000,9 +1218,48 @@ document.getElementById("shelfBody").addEventListener("click",function(e){
   }
 });
 document.getElementById("shelfBody").addEventListener("change",function(e){
+  var cb=e.target.closest(".cbpick");
+  if(cb){
+    selToggle(cb.dataset.key, cb.checked);
+    var card=cb.closest(".scard"); if(card) card.classList.toggle("sel", cb.checked);
+    renderSelBar(); return;
+  }
   var s=e.target.closest("[data-move]"); if(!s) return;
-  var ov=shelfOverrides(); ov[s.dataset.move]=s.value; store.set("shelfGroups", ov);
+  var key=s.dataset.move, val=s.value;
+  if(val==="__new__"){
+    var name=askGroupName("新分组");
+    if(!name){ renderShelf(); return; }
+    createGroup(name); moveItem(key,name);
+  } else {
+    moveItem(key, val);
+  }
   buildLibrary(); renderShelf();
+});
+document.getElementById("shelfNewGroup").onclick=function(){
+  var name=askGroupName("新分组");
+  if(!name) return;
+  createGroup(name);
+  buildLibrary(); renderShelf();
+  var h=null;
+  Array.prototype.forEach.call(document.querySelectorAll(".sgroup h3 .gname"),function(n){
+    if(n.textContent===name) h=n;
+  });
+  if(h){ var card=h.closest(".sgroup"); if(card){ card.scrollIntoView({block:"center"}); card.classList.add("flash"); setTimeout(function(){card.classList.remove("flash");},1500); } }
+};
+/* 批量移动：把勾选的书一次移进某个分组 */
+document.getElementById("selBar").addEventListener("click",function(e){
+  if(e.target.closest("#selClear")){ selClear(); renderShelf(); return; }
+  if(!e.target.closest("#selMove")) return;
+  var keys=selKeys(); if(!keys.length) return;
+  var sel=document.getElementById("selGroup");
+  var g=sel?sel.value:"";
+  if(g==="__new__"){
+    g=askGroupName("新分组");
+    if(!g) return;
+    createGroup(g);
+  }
+  keys.forEach(function(k){ moveItem(k,g); });
+  selClear(); buildLibrary(); renderShelf();
 });
 
 /* theme */
@@ -1054,6 +1311,8 @@ document.getElementById("btnHelp").onclick=function(){
     '<p style="font-size:13.5px;line-height:2">把鼠标停在<b>左栏原文</b>上，右栏同段译文会高亮；切到「仅原文」后，悬停还会浮出译文卡片。</p>',
     '<p style="font-size:13.5px;line-height:2">带虚线的词是术语，悬停看解释；<b>点击</b>会固定解释卡，同时在左边原文里把对应的英文词高亮出来（再点一次或点空白处取消）。</p>',
     '<p style="font-size:13.5px;line-height:2">上栏可切换 对照 / 仅原文 / 仅译文，调字号；左侧「切换配色」有米白、羊皮纸、夜间三种。</p>',
+    '<p style="font-size:13.5px;line-height:2">书架里可以自己建分组，名字随便起：右上角「＋ 分组」，或卡片右下角「移动到　＋ 新建分组…」。勾选卡片右上角的小方框可以<b>多选</b>，底部会浮出「移入分组」，一次挪一批；分组标题上还能「选择本组」。</p>',
+    '<p style="font-size:13.5px;line-height:2">每本书的阅读进度会自动记住：卡片上有进度条和「读到 42%」，下次打开直接回到上次的位置。</p>',
     '<p style="font-size:13.5px;line-height:2">快捷键：<span class="kbd">1</span><span class="kbd">2</span><span class="kbd">3</span> 切视图　<span class="kbd">+</span><span class="kbd">−</span> 字号　<span class="kbd">j</span><span class="kbd">k</span> 下一段/上一段　<span class="kbd">[</span><span class="kbd">]</span> 上一节/下一节　<span class="kbd">Esc</span> 关闭浮层</p>',
     '<p style="font-size:13.5px;line-height:2">想读别的论文？见 <b>FORMAT.md</b>：把 PDF 转成一份 JSON 数据文件放进 <code>papers/</code>，在 <code>index.html</code> 里加一行 &lt;script&gt; 即可。</p>'
   ].join(""));
@@ -1102,7 +1361,21 @@ window.addEventListener("scroll",function(){
     tocLinks.forEach(function(a){ a.classList.toggle("on", a===cur); });
   }
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(function(){ if(S.id) store.set("pos:"+S.id, window.scrollY); }, 400);
+  saveTimer=setTimeout(function(){
+    if(!S.id) return;
+    /* 记住：读到多少、落在哪一节、像素位置 */
+    var y=h.scrollTop+120, sec=null;
+    var els=document.querySelectorAll("#doc section.sec");
+    for(var i=0;i<els.length;i++){ if(els[i].offsetTop<=y) sec=els[i]; }
+    store.set("prog:"+S.id, {
+      pct: Math.min(100, Math.round(pct*10)/10),
+      sec: sec ? sec.id : "",
+      secTitle: sec ? (sec.dataset.label||"") : "",
+      y: Math.round(window.scrollY),
+      t: Date.now()
+    });
+    store.set("pos:"+S.id, Math.round(window.scrollY));
+  }, 400);
 },{passive:true});
 
 /* keyboard */
@@ -1141,6 +1414,17 @@ document.addEventListener("click",function(e){
 });
 
 function cur(){ return PAPERS.filter(function(x){return x.id===S.id;})[0]; }
+
+/* 调试/自测用的最小接口（也方便以后写自动化测试） */
+window.__br = {
+  papers: function(){ return PAPERS; },
+  open: open, renderShelf: renderShelf, buildLibrary: buildLibrary, openShelf: openShelf, closeShelf: closeShelf,
+  shelfState: shelfState, shelfItems: shelfItems, shelfGroups: shelfGroups,
+  createGroup: createGroup, renameGroup: renameGroup, deleteGroup: deleteGroup,
+  moveItem: moveItem, progressOf: progressOf, saveProgress: function(id,o){ store.set("prog:"+id,o); },
+  selKeys: selKeys, selClear: selClear, selToggle: selToggle, renderSelBar: renderSelBar,
+  resetShelf: function(){ SHELF_CACHE=null; try{ localStorage.removeItem("br:shelf"); localStorage.removeItem("br:shelfGroups"); }catch(e){} }
+};
 
 window.addEventListener("beforeprint",function(){ refreshTocLinks(); });
 boot();
