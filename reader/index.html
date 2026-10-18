@@ -376,8 +376,8 @@ body.m-zh .tgt{max-width:74ch}
   <div class="main">
     <div class="topbar">
       <div class="in">
-        <button class="ico" id="btnNav" title="目录">☰</button>
-        <span class="crumb" id="crumb"></span>
+        <button class="ico" id="btnNav" title="书架 / Bookshelf">☰</button>
+        <span class="crumb" id="crumb" title="点一下开合左侧目录"></span>
         <div class="ctrls">
           <div class="seg" id="modeSeg">
             <button data-mode="m-dual" class="on">对照</button>
@@ -684,7 +684,10 @@ function openShelf(focus){
     if(c){ c.scrollIntoView({block:"center"}); c.classList.add("flash"); setTimeout(function(){c.classList.remove("flash");},1600); }
   }
 }
-function closeShelf(){ var v=document.getElementById("shelfview"); if(v) v.classList.remove("on"); }
+function closeShelf(){
+  var v=document.getElementById("shelfview");
+  if(v) v.classList.remove("on");
+}
 function renderShelf(){
   var body=document.getElementById("shelfBody"); if(!body) return;
   var items=shelfItems(), groups=shelfGroups();
@@ -788,15 +791,15 @@ function open(p, first){
   var pg = progressOf(p.id);
   var legacy = store.get("pos:"+p.id, 0);
   var pos = (pg && pg.y) || (typeof legacy==="number" ? legacy : 0) || 0;
-  if(!first && !pos) window.scrollTo(0,0);
+  if(!first && !pos) window.scrollTo({top:0, behavior:"instant"});
   if(pos>50){
     var moved=false, detect=function(){ moved=true; };
     ["wheel","touchstart","keydown"].forEach(function(ev){ window.addEventListener(ev, detect, {once:true, passive:true}); });
     var restore=function(){
       if(moved) return;
       var t = (pg && pg.sec) ? document.getElementById(pg.sec) : null;
-      if(t){ window.scrollTo(0, Math.max(0, t.offsetTop-60)); return; }
-      window.scrollTo(0, pos);
+      if(t){ window.scrollTo({top:Math.max(0, t.offsetTop-60), behavior:"instant"}); return; }
+      window.scrollTo({top:pos, behavior:"instant"});
     };
     setTimeout(restore, 60);
     setTimeout(restore, 420);
@@ -1163,7 +1166,17 @@ Array.prototype.forEach.call(document.querySelectorAll("#modeSeg button"),functi
 document.getElementById("fsUp").onclick=function(){ S.fs=Math.min(22,S.fs+1); applyFs(); };
 document.getElementById("fsDown").onclick=function(){ S.fs=Math.max(13,S.fs-1); applyFs(); };
 function applyFs(){ document.documentElement.style.setProperty("--fs",S.fs+"px"); store.set("fs",S.fs); }
-document.getElementById("btnNav").onclick=function(){ document.body.classList.toggle("nav"); };
+document.getElementById("btnNav").onclick=function(){
+  var v=document.getElementById("shelfview");
+  if(v && v.classList.contains("on")) closeShelf(); else openShelf();
+};
+/* 标题：宽屏点一下回到开头；窄屏（侧栏是抽屉时）点一下开合目录 */
+document.getElementById("crumb").style.cursor="pointer";
+document.getElementById("crumb").title="点一下回到开头（窄屏时开合目录）";
+document.getElementById("crumb").onclick=function(){
+  if(window.innerWidth<=1000){ document.body.classList.toggle("nav"); }
+  else { window.scrollTo({top:0, behavior:"instant"}); }
+};
 
 /* ---------- 书架交互 ---------- */
 document.getElementById("btnShelf").onclick=function(){ openShelf(); };
@@ -1351,7 +1364,8 @@ var saveTimer=null;
 window.addEventListener("scroll",function(){
   var h=document.documentElement;
   var pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight||1)*100;
-  document.getElementById("prog").style.width=pct+"%";
+  var progEl=document.getElementById("prog");
+  if(progEl) progEl.style.width=pct+"%";
   if(tocLinks.length){
     var y=h.scrollTop+120, cur=null;
     tocLinks.forEach(function(a){
