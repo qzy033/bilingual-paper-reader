@@ -15,3 +15,6 @@ Thumbs.db
 # 涓存椂鏂囦欢
 _s*.html
 preview-*.png
+
+# 本地发布脚本
+_*.ps1
