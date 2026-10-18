@@ -25,4 +25,7 @@ _*.ps1
 # 本地阅读截图（含论文正文，不入库）
 docs/screenshot-llama.png
 screenshot-*.png
-reader/assets/llama/
+
+# 各论文的插图只在本地（构建会复制到 reader/assets/<id>/）
+reader/assets/*
+!reader/assets/demo-attention-primer/
