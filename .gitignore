@@ -1,9 +1,9 @@
-# 本地论文数据（示例除外）
+﻿# 鏈湴璁烘枃鏁版嵁锛堢ず渚嬮櫎澶栵級
 data/*
 !data/demo/
 !data/README.md
 
-# 本地产物
+# 鏈湴浜х墿
 *.pdf
 *.png.tmp
 *.log
@@ -12,15 +12,21 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# 临时文件
+# 涓存椂鏂囦欢
 _s*.html
 preview-*.png
 
-# ���ط����ű�
+# 本地发布脚本
 _*.ps1
 
-# �ַ�����
+# 分发产物
 dist/
 
-# ���� PDF ֻ�ű��أ���Ȩԭ��
-papers/*.pdf
+# 论文 PDF 只放本地（版权原因）
+papers/*
+!papers/manifest.json
+!papers/README.md
+
+# 本地阅读截图
+docs/screenshot-llama.png
+papers/_extract/

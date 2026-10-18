@@ -419,7 +419,7 @@ function terms(s){
     var lead=/^\s*<b>/.test(b) ? "" : "<b>"+escq(a)+"</b>　";
     var en=CUR_TERMS[a]||guessEn(b);
     return '<span class="term" data-tip="'+lead+escq(b)+'"'+(en?' data-en="'+escq(en)+'"':'')+'>'+a+'</span>';
-  });
+  }).replace(/\*\*([^*<>]+)\*\*/g,"<b>$1</b>");
 }
 var CUR_REFS = {};
 function citeify(html){
@@ -479,6 +479,7 @@ function buildLibrary(){
     box.appendChild(el("div","grp", esc(g) + '<i>' + list.length + '</i>'));
     list.forEach(function(it){
       var b=el("button", it.status==="ready"?"":"todo");
+      b.dataset.id=it.id; b.dataset.arxiv=it.arxiv;
       b.innerHTML='<span>'+(it.status==="ready"?'':'<em class="dotq"></em>')+esc(it.titleZh||it.titleEn)+'</span>'+
         '<small>'+esc(it.titleEn)+'</small>';
       b.onclick=function(){
