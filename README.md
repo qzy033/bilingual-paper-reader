@@ -34,7 +34,19 @@ git clone <this-repo> && cd bilingual-paper-reader
 
 ## 把自己的论文做成一本
 
-一条命令（Windows / macOS / Linux 都行）：
+两条路线，详见 **[docs/USAGE.md](docs/USAGE.md)**（哪一步做了什么、AI 翻哪些字段、怎么校验、怎么排错）。
+
+**路线 A（推荐）——让 agent 读论文再写数据。** 把 PDF 抽成骨架后，直接对 Claude Code / Codex /
+Cursor 这类能读写本地文件的 agent 说：
+
+> 读 `reader/FORMAT.md`，参考 `data/demo/` 的写法，把 `data/my-paper/` 里的英文翻成中文：
+> 逐句对齐，术语用 `[[中文|解释]]` 就地标注（面向高中生，先比方后定义），写导读、补图注和表格，
+> 生成 `terms.json`，最后跑 `python build_paper.py` 把 `!` 修完。
+
+它会判断哪里该拆段、哪个词值得解释、公式怎么重写、表格数字对应哪一列——比逐段直译好读得多。
+完整提示词见 [docs/USAGE.md §4.2](docs/USAGE.md)（可整段复制）。
+
+**路线 B——脚本批量翻译（适合长文、想先出草稿）。** 一条命令：
 
 ```powershell
 # Windows
@@ -48,16 +60,17 @@ export OPENAI_API_KEY=sk-...
 ./make.sh ~/papers/some-paper.pdf my-paper --package
 ```
 
-脚本做四件事：`pdf_to_json.py` 抽文本分节 → `translate.py` 逐段翻译并生成术语表 →
+脚本做四件事：`pdf_to_json.py` 抽文本分节 → `translate.py` 逐段翻译、加术语标记、生成术语表 →
 `build_paper.py` 构建 → `package.py` 打 zip。想自己译就加 `-NoTranslate`。
 
 只跑其中一步也行：
 
 ```bash
-python tools/pdf_to_json.py paper.pdf my-paper     # 1. 抽文本、自动分节
-python tools/translate.py --slug my-paper --with-terms   # 2. 自动翻译（可 --dry-run 先看量）
-python build_paper.py                              # 3. 打包进阅读器
-python tools/package.py                            # 4. 打成可分发的 zip
+python tools/pdf_to_json.py paper.pdf my-paper           # 1. 抽文本、自动分节
+python tools/translate.py --slug my-paper --dry-run      # 2. 看看要翻多少段
+python tools/translate.py --slug my-paper --annotate --with-terms   # 3. 翻译 + 术语 + 映射
+python build_paper.py                                    # 4. 校验并打包进阅读器
+python tools/package.py                                  # 5. 打成可分发的 zip
 ```
 
 刷新 `reader/index.html`，左侧「论文库」里就多了一本。
@@ -75,8 +88,11 @@ reader/papers/library.js   构建产物：论文数据（自动生成）
 reader/assets/<id>/        构建产物：插图
 data/demo/                 示例论文源数据
 tools/pdf_to_json.py       PDF → 待翻译骨架
+tools/translate.py         批量翻译 / 术语标注 / 术语表
+tools/package.py           打分发 zip
+docs/USAGE.md              详细使用说明（两条路线、AI 翻什么、排错）
+docs/*.png                 截图
 build_paper.py             构建 + 格式校验
-docs/                      截图
 ```
 
 ## 设计上的取舍
