@@ -1,32 +1,26 @@
-﻿# 鏈湴璁烘枃鏁版嵁锛堢ず渚嬮櫎澶栵級
+# 本地论文数据（示例除外）
 data/*
 !data/demo/
 !data/README.md
 
-# 鏈湴浜х墿
+# 论文 PDF 与抽取出的原始文本只放本地（版权原因）
+papers/*
+!papers/manifest.json
+!papers/README.md
+
+# 本地产物
 *.pdf
-*.png.tmp
 *.log
 __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
-
-# 涓存椂鏂囦欢
-_s*.html
-preview-*.png
-
-# 本地发布脚本
-_*.ps1
-
-# 分发产物
 dist/
 
-# 论文 PDF 只放本地（版权原因）
-papers/*
-!papers/manifest.json
-!papers/README.md
+# 临时文件
+_s*.html
+preview-*.png
+_*.ps1
 
-# 本地阅读截图
+# 本地阅读截图（含论文正文，不入库）
 docs/screenshot-llama.png
-papers/_extract/
