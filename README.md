@@ -40,7 +40,7 @@ git clone <this-repo> && cd bilingual-paper-reader
 Cursor 这类能读写本地文件的 agent 说：
 
 > 读 `reader/FORMAT.md`，参考 `data/demo/` 的写法，把 `data/my-paper/` 里的英文翻成中文：
-> 逐句对齐，术语用 `[[中文|解释]]` 就地标注（面向高中生，先比方后定义），写导读、补图注和表格，
+> 逐句对齐，术语用 `[[中文|解释]]` 就地标注（面向非专业读者，先比方后定义），写导读、补图注和表格，
 > 生成 `terms.json`，最后跑 `python build_paper.py` 把 `!` 修完。
 
 它会判断哪里该拆段、哪个词值得解释、公式怎么重写、表格数字对应哪一列——比逐段直译好读得多。
