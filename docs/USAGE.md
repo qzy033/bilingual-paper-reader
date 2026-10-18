@@ -294,6 +294,15 @@ data/<slug>/             译本数据
 - `slug` 先填好（比如 `llama`），等 `data/llama/` 建出来，这本书就自动从「待译」变成「已译」；
 - `slug` 填 `null` 也行，那它会一直是待译状态；
 - `optional: true` 用于「有数据才显示」的条目（示例论文就是这种）；
+- **不是 arXiv 的论文**（比如 OpenAI 的技术报告）用 `pdf` 字段指定文件名：
+
+```json
+{ "arxiv": "", "pdf": "gpt-2.pdf", "slug": "gpt2",
+  "titleEn": "Language Models are Unsupervised Multitask Learners",
+  "titleZh": "语言模型是无监督多任务学习者（GPT-2）" }
+```
+
+  有 `pdf` 就按 `papers/<pdf>` 找文件（列表里会出现「PDF ↗」），`arxiv` 留空即可；
 - `group` 可以不填：分组现在**由你自己在页面上建**，manifest 里的 `groups` / `group` 只当「第一次打开时的初始分组」用。
 
 ### 6.2 页面上的书架
