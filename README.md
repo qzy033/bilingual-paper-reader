@@ -6,6 +6,8 @@
 仓库里只有**工具**和一篇**原创示例论文**——不带任何已发表论文的正文与译文（原因见
 [NOTICE.md](NOTICE.md)）。你可以把自己的 PDF 变成一本书，只放在自己电脑上。
 
+在线试试：**https://qzy033.github.io/bilingual-paper-reader/**
+
 ![阅读器截图](docs/screenshot-top.png)
 
 ## 亮眼的地方
